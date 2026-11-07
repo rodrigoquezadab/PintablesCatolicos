@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "live-server",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "live-server", "--port=5500", "--no-browser", "--ignore=.venv-vectores,node_modules"],
+      "port": 5500
+    }
+  ]
+}

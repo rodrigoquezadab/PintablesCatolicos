@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pintables Católicos — Libros y Dibujos para Imprimir</title>
+  <meta name="description"
+    content="Generador de libros y dibujos católicos para colorear, ajustados a hojas de documentos como Word (Carta) con líneas de corte punteadas.">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2.5'><path d='M12 2v20M5 8h14'/></svg>">
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: var(--slate-800);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabecera */
+    .app-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-200);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4338ca, #6366f1 60%, #f59e0b);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text h1 span {
+      color: var(--primary);
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      border-radius: 999px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--slate-500);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border-color: var(--slate-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--slate-200);
+      color: var(--slate-900);
+    }
+
+    .btn-dark {
+      background: var(--slate-800);
+      color: white;
+    }
+
+    .btn-dark:hover {
+      background: var(--slate-900);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #3730a3);
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover), #312e81);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    }
+
+    .badge-count {
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    /* --- BARRA PLEGABLE DE AJUSTES (SIEMPRE PLEGADA POR DEFECTO) --- */
+    .settings-toggle-bar {
+      background: #f8fafc;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 6px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+      position: sticky;
+      top: 61px;
+      z-index: 35;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .settings-toggle-bar:hover {
+      background: #f1f5f9;
+    }
+
+    .toggle-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-summary-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-700);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .collapsed-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mini-pill {
+      font-size: 11px;
+      padding: 2px 7px;
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 6px;
+      color: var(--slate-600);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .mini-pill.highlight {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #3730a3;
+      font-weight: 700;
+    }
+
+    .mini-pill.pill-active {
+      background: #fef3c7;
+      border-color: #fde68a;
+      color: #78350f;
+      font-weight: 700;
+    }
+
+    .mini-pill.pill-purple {
+      background: #f3e8ff;
+      border-color: #e9d5ff;
+      color: #581c87;
+      font-weight: 700;
+    }
+
+    .mini-pill.pill-subtle {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
+    }
+
+    .toggle-action-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .toggle-action-btn:hover {
+      background: #eef2ff;
+      border-color: #a5b4fc;
+      color: #3730a3;
+    }
+
+    .toggle-arrow {
+      display: inline-block;
+      font-size: 11px;
+      transition: transform 0.2s ease;
+    }
+
+    /* Panel Plegable Contenedor */
+    .collapsible-panel {
+      display: none;
+      /* SIEMPRE PLEGADO POR DEFECTO */
+      background: #ffffff;
+      border-bottom: 2px solid var(--slate-300);
+      box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    .collapsible-panel .settings-bar {
+      position: static;
+      box-shadow: none;
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    .collapsible-panel .folder-status-bar {
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    .collapsible-panel .presets-bar {
+      border-bottom: none;
+    }
+
+    .settings-collapse-footer {
+      background: var(--slate-50);
+      border-top: 1px solid var(--slate-200);
+      padding: 6px 16px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .settings-collapse-footer:hover {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    /* Barra de Configuración */
+    .settings-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 61px;
+      z-index: 30;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .settings-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .select-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .select-pill.highlight {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+
+    .select-pill label {
+      font-weight: 700;
+      color: var(--slate-700);
+    }
+
+    .select-pill.highlight label {
+      color: #3730a3;
+    }
+
+    .select-pill select {
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate-800);
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--slate-200);
+      background: var(--slate-50);
+      color: var(--slate-600);
+      transition: all 0.15s;
+    }
+
+    .toggle-btn.active {
+      background: #fef3c7;
+      color: #78350f;
+      border-color: #fde68a;
+    }
+
+    .toggle-btn.active-purple {
+      background: #f3e8ff;
+      color: #581c87;
+      border-color: #e9d5ff;
+    }
+
+    /* Barra de Presets Rápidos */
+    .presets-bar {
+      background: rgba(255, 255, 255, 0.85);
+      border-bottom: 1px solid var(--slate-200);
+      padding: 8px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .preset-chip {
+      background: white;
+      border: 1px solid var(--slate-200);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--slate-700);
+      transition: all 0.15s;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Área Principal del Documento */
+    .document-area {
+      flex: 1;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    /* Hoja Física Simulada */
+    .sheet-wrapper {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sheet-toolbar {
+      width: 100%;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-bottom: none;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--slate-600);
+    }
+
+    .page-tag {
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+    }
+
+    .sheet-paper {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--slate-300);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 215.9 / 279.4;
+      /* Proporción Carta */
+    }
+
+    /* Área delimitada exactamente por los márgenes de impresión (Word) */
+    .sheet-content {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      /* Sin márgenes ni bordes internos: el dibujo toca los límites de impresión */
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Guía visual de márgenes de documento */
+    .margins-guide {
+      position: absolute;
+      border: 1px dashed #3b82f6;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Layout 1 por página: llena completamente el área de márgenes */
+    .layout-single {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Layout 2 apiladas (horizontales que van de margen a margen con corte central) */
+    .layout-two-stacked {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    .slot-half {
+      width: 100%;
+      height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* LÍNEA PUNTEADA DE CORTE CON TIJERA */
+    .cut-line-horizontal {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    .cut-line-horizontal .dashed-border {
+      flex: 1;
+      border-top: 2px dashed #64748b;
+      margin: 0 4px;
+    }
+
+    .scissor-label {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #cbd5e1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      color: #334155;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Layout 2 columnas verticales con corte vertical */
+    .layout-two-columns {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    .slot-column {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .cut-line-vertical {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 25;
+      pointer-events: none;
+    }
+
+    .cut-line-vertical .dashed-border {
+      flex: 1;
+      border-left: 2px dashed #64748b;
+      margin: 4px 0;
+    }
+
+    /* Layout 4 tarjetas cuadrícula 2x2 */
+    .layout-four-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    .slot-quarter {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    /* Ranura de Dibujo: aprovecha el 100% hasta los márgenes */
+    .drawing-box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    .drawing-svg-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* El SVG o imagen se expande para tocar los límites de los márgenes */
+    .drawing-svg-wrap svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .drawing-svg-wrap img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Portada para colorear */
+    .cover-box {
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--slate-900);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      background: white;
+    }
+
+    .page-footer-num {
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 10px;
+      color: var(--slate-400);
+      pointer-events: none;
+    }
+
+    /* Modales */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 960px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--slate-50);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--slate-50);
+    }
+
+    /* Cuadrícula de la biblioteca */
+    .drawings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+    }
+
+    .card-drawing {
+      background: white;
+      border: 2px solid var(--slate-200);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .card-drawing:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-drawing.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+
+    .card-preview {
+      width: 100%;
+      aspect-ratio: 4/3;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    .card-info {
+      padding: 8px 10px;
+    }
+
+    .card-cat {
+      font-size: 10px;
+      color: #6366f1;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .card-info h4 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-800);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge-orient {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 2px;
+    }
+
+    .badge-horiz {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-vert {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .card-check {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--slate-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      color: transparent;
+    }
+
+    .card-drawing.selected .card-check {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* REGLAS ESTRICTAS DE IMPRESIÓN (Ctrl + P) */
+    @media print {
+      html[data-theme="dark"] {
+        color-scheme: light;
+      }
+
+      @page {
+        size: letter portrait;
+        margin: 0;
+      }
+
+      html,
+      body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 215.9mm !important;
+        height: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print,
+      .app-header,
+      .settings-bar,
+      .presets-bar,
+      .sheet-toolbar,
+      .margins-guide,
+      .modal-overlay,
+      footer {
+        display: none !important;
+      }
+
+      .document-area {
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 0 !important;
+        width: 100% !important;
+      }
+
+      .sheet-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .sheet-paper {
+        width: 215.9mm !important;
+        height: 279.4mm !important;
+        max-width: none !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+
+      .dashed-border {
+        border-style: dashed !important;
+        border-color: #64748b !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+    }
+
+    /* --- ESTILOS DE GESTIÓN DE CARPETAS E IMÁGENES --- */
+    .btn-folder-header {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white !important;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+
+    .btn-folder-header:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .folder-status-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .folder-status-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .folder-status-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #fef3c7;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .folder-status-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Modal Dropzone */
+    .dropzone-box {
+      border: 2px dashed #a5b4fc;
+      background: #f8faff;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .dropzone-box:hover,
+    .dropzone-box.dragover {
+      background: #eef2ff;
+      border-color: var(--primary);
+      transform: scale(1.01);
+    }
+
+    /* Drag & Drop Fullscreen Overlay */
+    .drag-drop-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .drag-drop-box {
+      background: white;
+      border: 3px dashed var(--primary);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      max-width: 480px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Tarjetas de Dibujo con Botones de Gestión */
+    .card-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      background: var(--slate-50);
+      border-top: 1px solid var(--slate-200);
+      gap: 4px;
+    }
+
+    .card-btn {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 10px;
+      cursor: pointer;
+      color: var(--slate-700);
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.15s;
+    }
+
+    .card-btn:hover {
+      background: var(--slate-100);
+      color: var(--slate-900);
+      border-color: var(--slate-300);
+    }
+
+    .card-btn.btn-del:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+
+    /* Toast */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 11000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideInToast 0.3s ease;
+    }
+
+    @keyframes slideInToast {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* --- MEJORAS: ENLACE DE MARCA, ACCESIBILIDAD Y RESPONSIVE --- */
+    a.brand-wrap {
+      text-decoration: none;
+      color: inherit;
+      border-radius: 12px;
+    }
+
+    a.brand-wrap:hover .brand-logo {
+      transform: rotate(-6deg) scale(1.05);
+    }
+
+    .brand-logo {
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn:focus-visible,
+    .toggle-btn:focus-visible,
+    .preset-chip:focus-visible,
+    .card-btn:focus-visible,
+    .card-drawing:focus-visible,
+    a.brand-wrap:focus-visible,
+    .settings-toggle-bar:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #a5b4fc;
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .header-actions {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .settings-toggle-bar,
+    .settings-bar {
+      top: var(--header-h, 61px);
+    }
+
+    .pages-warning {
+      color: #b45309;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1360px) {
+      .brand-text p {
+        display: none;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .btn {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app-header {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .brand-badge {
+        display: none;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 6px;
+      }
+
+      .header-actions .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .settings-toggle-bar {
+        padding: 6px 12px;
+      }
+
+      .toggle-action-btn #settingsToggleText {
+        display: none;
+      }
+
+      .settings-bar,
+      .presets-bar,
+      .folder-status-bar {
+        padding: 10px 12px;
+      }
+
+      .select-pill {
+        flex-wrap: wrap;
+        max-width: 100%;
+      }
+
+      .select-pill select {
+        max-width: 100%;
+      }
+
+      .document-area {
+        padding: 16px;
+        gap: 20px;
+      }
+
+      .modal-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 16px;
+      }
+
+      .modal-footer {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 16px !important;
+      }
+
+      .drawings-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .toast-msg {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+  </style>
+
+  <style>
+    /* Biblioteca: recuadro de ayuda e imágenes giradas (el giro se aplica con CSS, sin canvas) */
+    .biblioteca-info {
+      border: 1px solid #c7d2fe;
+      background: #f8faff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #334155;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .biblioteca-info code {
+      background: #eef2ff;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #3730a3;
+    }
+
+    .biblioteca-info ol { margin: 4px 0 0 18px; }
+    .biblioteca-info .aviso { color: #b45309; font-weight: 600; margin-top: 6px; }
+
+    .celda-dibujo { position: absolute; display: flex; align-items: center; justify-content: center; }
+    .celda-dibujo .drawing-box { width: 100%; height: 100%; }
+    /* «Estirar hasta los márgenes»: el dibujo llena todo su hueco */
+    .celda-dibujo img { object-fit: fill !important; }
+    /* Marco negro alrededor de cada dibujo: GROSOR_MARCO mm a escala del papel (también al imprimir) */
+    .sheet-paper { container-type: inline-size; }
+    .celda-dibujo .drawing-svg-wrap.con-marco {
+      outline: calc(var(--marco-mm, 0.5) / var(--papel-mm, 215.9) * 100cqw) solid #000;
+      outline-offset: 0;
+      overflow: visible;
+    }
+    .sheet-paper > .cut-line-horizontal, .sheet-paper > .cut-line-vertical { z-index: 25; }
+
+    .giro-wrap { position: relative; width: 100%; height: 100%; container-type: size; overflow: hidden; }
+    .giro-wrap img { position: absolute; top: 50%; left: 50%; object-fit: contain; max-width: none !important; max-height: none !important; }
+    .giro-wrap.g90 img, .giro-wrap.g270 img { width: 100cqh !important; height: 100cqw !important; }
+    .giro-wrap.g180 img { width: 100cqw !important; height: 100cqh !important; }
+    .giro-wrap.g90 img { transform: translate(-50%, -50%) rotate(90deg); }
+    .giro-wrap.g180 img { transform: translate(-50%, -50%) rotate(180deg); }
+    .giro-wrap.g270 img { transform: translate(-50%, -50%) rotate(270deg); }
+  </style>
+
+  <style>
+    /* ===================== MODO OSCURO (por defecto) =====================
+       Solo cambia la interfaz: las hojas, la portada y las vistas previas siguen
+       en blanco porque representan el papel que se imprime. */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --slate-50: #111827;
+      --slate-100: #1a2333;
+      --slate-200: #263247;
+      --slate-300: #3a4760;
+      --slate-400: #64748b;
+      --slate-500: #94a3b8;
+      --slate-600: #b6c2d3;
+      --slate-700: #cbd5e1;
+      --slate-800: #e2e8f0;
+      --slate-900: #f8fafc;
+      --panel: #151d2b;
+      --panel-2: #1a2333;
+      --borde: #2b3850;
+    }
+
+    html[data-theme="dark"] body { background-color: #0b1120; }
+
+    html[data-theme="dark"] .app-header,
+    html[data-theme="dark"] .collapsible-panel,
+    html[data-theme="dark"] .settings-bar,
+    html[data-theme="dark"] .folder-status-bar,
+    html[data-theme="dark"] .modal-container {
+      background: var(--panel);
+      border-color: var(--borde);
+    }
+
+    html[data-theme="dark"] .settings-toggle-bar { background: #0f1726; border-color: var(--borde); }
+    html[data-theme="dark"] .settings-toggle-bar:hover { background: #142036; }
+    html[data-theme="dark"] .presets-bar { background: rgba(21, 29, 43, 0.92); border-color: var(--borde); }
+
+    html[data-theme="dark"] .mini-pill,
+    html[data-theme="dark"] .toggle-action-btn,
+    html[data-theme="dark"] .preset-chip,
+    html[data-theme="dark"] .card-btn {
+      background: var(--panel-2);
+      border-color: var(--borde);
+      color: var(--slate-700);
+    }
+
+    html[data-theme="dark"] .mini-pill.highlight,
+    html[data-theme="dark"] .select-pill.highlight { background: #1e2552; border-color: #3b4590; color: #c7d2fe; }
+    html[data-theme="dark"] .select-pill.highlight label { color: #c7d2fe; }
+    html[data-theme="dark"] .mini-pill.pill-active,
+    html[data-theme="dark"] .toggle-btn.active { background: #3a2a0c; border-color: #6b4e12; color: #fcd34d; }
+    html[data-theme="dark"] .mini-pill.pill-purple,
+    html[data-theme="dark"] .toggle-btn.active-purple { background: #2e1a47; border-color: #553080; color: #e9d5ff; }
+    html[data-theme="dark"] .toggle-action-btn { color: #a5b4fc; }
+    html[data-theme="dark"] .settings-collapse-footer { color: #a5b4fc; }
+    html[data-theme="dark"] .settings-collapse-footer:hover,
+    html[data-theme="dark"] .toggle-action-btn:hover { background: #1e2552; color: #c7d2fe; }
+    html[data-theme="dark"] .brand-text h1 span { color: #a5b4fc; }
+    html[data-theme="dark"] .select-pill select option { background: #151d2b; color: #e2e8f0; }
+
+    html[data-theme="dark"] .btn-dark { background: #334155; color: #ffffff; border-color: #475569; }
+    html[data-theme="dark"] .btn-dark:hover { background: #475569; }
+    html[data-theme="dark"] .folder-status-icon { background: #3a2a0c; color: #fcd34d; }
+    html[data-theme="dark"] .card-drawing { background: var(--panel-2); border-color: var(--borde); }
+    html[data-theme="dark"] .card-drawing.selected { border-color: #818cf8; }
+    html[data-theme="dark"] .card-check { background: rgba(26, 35, 51, 0.9); }
+    html[data-theme="dark"] .card-cat { color: #a5b4fc; }
+    html[data-theme="dark"] .badge-horiz { background: #3a2a0c; color: #fcd34d; }
+    html[data-theme="dark"] .badge-vert { background: #0f3a24; color: #86efac; }
+    html[data-theme="dark"] .card-btn.btn-del:hover { background: #4c1515; color: #fca5a5; border-color: #7f1d1d; }
+    html[data-theme="dark"] .biblioteca-info { background: #141c33; border-color: #2e3a6b; color: var(--slate-700); }
+    html[data-theme="dark"] .biblioteca-info code { background: #1e2552; color: #c7d2fe; }
+    html[data-theme="dark"] .biblioteca-info .aviso { color: #fbbf24; }
+    html[data-theme="dark"] .pages-warning { color: #fbbf24; }
+
+    /* Estilos escritos directamente en el HTML de modales y estado vacío */
+    html[data-theme="dark"] .modal-container [style*="background: white"],
+    html[data-theme="dark"] .modal-container [style*="background: #f8fafc"],
+    html[data-theme="dark"] .document-area > div[style*="background: white"] {
+      background: var(--panel) !important;
+      border-color: var(--borde) !important;
+    }
+    html[data-theme="dark"] .modal-container .modal-body[style*="background: #f8fafc"] { background: #0f1726 !important; }
+    html[data-theme="dark"] .modal-container [style*="color: #1e293b"],
+    html[data-theme="dark"] .modal-container [style*="color: #0f172a"],
+    html[data-theme="dark"] .modal-container label,
+    html[data-theme="dark"] .folder-status-bar [style*="color: #0f172a"],
+    html[data-theme="dark"] .document-area > div [style*="color: #1e293b"] { color: #e2e8f0 !important; }
+    html[data-theme="dark"] .modal-container [style*="color: #64748b"],
+    html[data-theme="dark"] .folder-status-bar [style*="color: #64748b"],
+    html[data-theme="dark"] .presets-bar [style*="color: #475569"],
+    html[data-theme="dark"] .document-area > div [style*="color: #64748b"],
+    html[data-theme="dark"] .sheet-toolbar [style*="color: #64748b"] { color: #94a3b8 !important; }
+    html[data-theme="dark"] .modal-container [style*="color: #4338ca"] { color: #a5b4fc !important; }
+    html[data-theme="dark"] .modal-container input,
+    html[data-theme="dark"] .modal-container select {
+      background: #0f1726 !important;
+      color: #e2e8f0;
+      border-color: var(--borde) !important;
+    }
+    html[data-theme="dark"] .modal-container [style*="border-bottom: 1px solid #e2e8f0"],
+    html[data-theme="dark"] .modal-container [style*="border-top: 1px solid #e2e8f0"] { border-color: var(--borde) !important; }
+
+    /* El papel no cambia: hojas, portada y vistas previas siguen en blanco y negro */
+    html[data-theme="dark"] .sheet-paper { border-color: #3a4760; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55); }
+    html[data-theme="dark"] .cover-box { border-color: #0f172a; }
+    html[data-theme="dark"] .scissor-label { color: #334155; border-color: #cbd5e1; }
+    html[data-theme="dark"] .page-footer-num { color: #94a3b8; }
+    html[data-theme="dark"] .card-preview { background: #ffffff; border-color: var(--borde); }
+
+    .btn-tema { padding: 8px 12px; font-size: 15px; line-height: 1; }
+  </style>
+
+  <!-- Aplica el tema guardado antes de pintar (oscuro por defecto) para evitar un destello blanco -->
+  <script>
+    (function () {
+      var tema = 'dark';
+      try { tema = localStorage.getItem('pintablesCatolicos.tema') || 'dark'; } catch (e) { }
+      document.documentElement.setAttribute('data-theme', tema === 'light' ? 'light' : 'dark');
+    })();
+  </script>
+
+  <!-- Estilo de página dinámico según el tamaño de hoja elegido (Carta / A4 / Oficio) -->
+  <style id="dynamicPageStyle">
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 1. Cabecera -->
+  <header class="app-header no-print">
+    <a class="brand-wrap" href="" onclick="location.reload(); return false;" title="Recargar Pintables Católicos">
+      <div class="brand-logo" aria-hidden="true">✝</div>
+      <div class="brand-text">
+        <h1>Pintables<span>Católicos</span> <span class="brand-badge">Carta / Word</span></h1>
+        <p>Generador de libros de colorear ajustados a los márgenes del documento</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <!-- Volver a leer la carpeta biblioteca/ -->
+      <button class="btn btn-folder-header" onclick="actualizarBiblioteca()"
+        title="Vuelve a leer la carpeta biblioteca (después de ejecutar actualizar_biblioteca.bat)">
+        <span>🔄 Actualizar</span>
+      </button>
+
+      <!-- Abrir Administrador de Biblioteca -->
+      <button class="btn btn-secondary" onclick="openLibraryModal()" title="Ver y gestionar dibujos cargados">
+        <span>📚 Biblioteca</span>
+        <span class="badge-count" id="headerSelectedCount">10</span>
+      </button>
+
+      <!-- Modo claro / oscuro -->
+      <button class="btn btn-secondary btn-tema" id="btnTema" onclick="alternarTema()"
+        title="Cambiar entre modo oscuro y modo claro" aria-label="Cambiar entre modo oscuro y modo claro">🌙</button>
+
+      <!-- Botón Plegar / Desplegar Ajustes -->
+      <button class="btn btn-secondary" id="headerSettingsToggle" onclick="toggleSettingsMenu()"
+        title="Desplegar o plegar barra de ajustes de impresión">
+        <span>⚙️ Ajustes</span>
+        <span id="headerSettingsArrow" style="font-size: 11px;">▾</span>
+      </button>
+
+      <button class="btn btn-dark" onclick="window.print()" title="Imprimir directamente en hoja Carta (Ctrl + P)">
+        <span>🖨️ Imprimir</span>
+      </button>
+
+      <button class="btn btn-primary" onclick="exportPDF()" id="btnExportPDF"
+        title="Abre el diálogo de impresión: elige «Guardar como PDF» como destino">
+        <span>📥 Guardar PDF</span>
+      </button>
+
+      <button class="btn btn-secondary" onclick="exportWord()" id="btnExportWord"
+        title="Descarga el libro como documento de Word (.docx) con las imágenes incrustadas, para revisarlo en un procesador de texto">
+        <span>📄 Descargar Word</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Barra Compacta Resumen de Ajustes (SIEMPRE VISIBLE, PLEGADA POR DEFECTO) -->
+  <div class="settings-toggle-bar no-print" id="settingsToggleBar" onclick="toggleSettingsMenu()" role="button"
+    tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){toggleSettingsMenu(); event.preventDefault();}">
+    <div class="toggle-summary">
+      <div class="toggle-summary-title">
+        <span>⚙️</span>
+        <span>Ajustes:</span>
+      </div>
+      <div id="collapsedSummaryBadges" class="collapsed-badges">
+        <span class="mini-pill">📄 Carta</span>
+        <span class="mini-pill">📐 Word 2.54cm</span>
+        <span class="mini-pill highlight">⚡ Inteligente</span>
+        <span class="mini-pill pill-active">✂️ Corte ON</span>
+        <span class="mini-pill pill-purple">📖 Portada ON</span>
+        <span class="mini-pill pill-subtle">📁 10 selec.</span>
+      </div>
+    </div>
+    <div class="toggle-action-btn" id="btnSettingsToggle">
+      <span id="settingsToggleText">Desplegar Ajustes</span>
+      <span id="settingsToggleArrow" class="toggle-arrow">▾</span>
+    </div>
+  </div>
+
+  <!-- Menú Plegable Completo de Configuración (SIEMPRE PLEGADO POR DEFECTO) -->
+  <div id="collapsibleSettings" class="collapsible-panel no-print" style="display: none;">
+    <!-- 2. Barra de Configuración de Documento -->
+    <div class="settings-bar">
+      <div class="settings-group">
+        <!-- Tamaño de Papel -->
+        <div class="select-pill">
+          <label>📄 Hoja:</label>
+          <select id="selectPaperSize" onchange="updateDocumentSettings()">
+            <option value="letter" selected>Carta (Letter 8.5 x 11")</option>
+            <option value="a4">A4 (210 x 297 mm)</option>
+            <option value="legal">Oficio (Legal 8.5 x 14")</option>
+          </select>
+        </div>
+
+        <!-- Márgenes Word -->
+        <div class="select-pill">
+          <label>📐 Márgenes de Documento:</label>
+          <select id="selectMargins" onchange="updateDocumentSettings()">
+            <option value="libro" selected>Libro para recortar (1 cm)</option>
+            <option value="normal">Normal (Word 2.54 cm)</option>
+            <option value="narrow">Estrecho (1.27 cm - Máximo dibujo)</option>
+            <option value="moderate">Moderado (2.54 cm / 1.9 cm)</option>
+            <option value="minimal">Mínimo Impresora (1.0 cm)</option>
+          </select>
+        </div>
+
+        <!-- Modo de Diagramación -->
+        <div class="select-pill highlight">
+          <label>⚡ Distribución:</label>
+          <select id="selectLayoutMode" onchange="updateDocumentSettings()">
+            <option value="smart" selected>2 dibujos por hoja (con línea de corte)</option>
+            <option value="1-per-page">1 dibujo por hoja (página completa)</option>
+            <option value="4-per-page">4 dibujos por hoja (tarjetas 2x2)</option>
+          </select>
+        </div>
+
+        <!-- Si el número de dibujos es impar, la última hoja se completa repitiendo uno -->
+        <div class="select-pill" id="pillRelleno" style="display: none;"
+          title="El número de dibujos es impar: la última hoja se completa repitiendo este dibujo">
+          <label>🔁 Completar la última hoja con:</label>
+          <select id="selectRelleno" onchange="appConfig.relleno = this.value; renderDocument();"></select>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <!-- Giro automático: gira cada dibujo si así se ve más grande en su hueco -->
+        <button class="toggle-btn active" id="btnToggleAutoRotate" onclick="toggleAutoRotate()"
+          title="Gira 90° cada dibujo cuando así ocupa más espacio en su hueco de la hoja (nunca se deforma)">
+          🔄 Giro automático: <span id="lblAutoRotateStatus">Activado</span>
+        </button>
+
+        <!-- Marco negro alrededor de cada dibujo -->
+        <button class="toggle-btn active" id="btnToggleMarco" onclick="toggleMarco()"
+          title="Dibuja una línea negra alrededor de cada dibujo">
+          🖼️ Marco: <span id="lblMarcoStatus">Activado</span>
+        </button>
+
+        <!-- Estirar: el dibujo llena todo su hueco hasta los márgenes -->
+        <button class="toggle-btn active" id="btnToggleEstirar" onclick="toggleEstirar()"
+          title="Estira cada dibujo hasta los márgenes (llena todo su hueco). Desactívalo para conservar la proporción original.">
+          ↔️ Estirar a los márgenes: <span id="lblEstirarStatus">Activado</span>
+        </button>
+
+        <!-- Línea Punteada de Corte (Activada por defecto) -->
+        <button class="toggle-btn active" id="btnToggleCutLines" onclick="toggleCutLines()"
+          title="Línea punteada para guiar el corte con tijera cuando van 2 o más dibujos por hoja">
+          ✂️ Línea de Corte: <span id="lblCutLinesStatus">Activada</span>
+        </button>
+
+        <!-- Portada -->
+        <button class="toggle-btn active-purple" id="btnToggleCover" onclick="toggleCover()">
+          📖 Portada: <span id="lblCoverStatus">Activada</span>
+        </button>
+
+        <button class="btn btn-secondary" onclick="openCoverModal()" style="padding: 5px 10px; font-size: 11px;">
+          ✏️ Editar Portada
+        </button>
+
+        <!-- Cantidad de Páginas -->
+        <div class="select-pill">
+          <label>Páginas:</label>
+          <select id="selectPagesCount" onchange="updateDocumentSettings()">
+            <option value="all" selected>Todas las necesarias</option>
+            <option value="4">Libro de 4 págs</option>
+            <option value="8">Libro de 8 págs</option>
+            <option value="12">Libro de 12 págs</option>
+            <option value="16">Libro de 16 págs</option>
+            <option value="20">Libro de 20 págs</option>
+          </select>
+        </div>
+
+        <!-- Guía visual de márgenes Word -->
+        <button class="toggle-btn" id="btnToggleMarginsGuide" onclick="toggleMarginsGuide()"
+          title="Muestra la línea azul de los márgenes de impresión para verificar que el dibujo llega hasta sus bordes">
+          👁️ Ver Límites de Margen
+        </button>
+      </div>
+    </div>
+
+    <!-- Barra de Estado de Carpeta e Impresión -->
+    <div class="folder-status-bar" id="folderStatusBar">
+      <div class="folder-status-info">
+        <div class="folder-status-icon">📁</div>
+        <div>
+          <strong id="statusFolderName" style="font-size: 13px; color: #0f172a;">Biblioteca: carpeta biblioteca/</strong>
+          <div id="statusDetails" style="font-size: 11px; color: #64748b;">Cargando…</div>
+        </div>
+      </div>
+      <div class="folder-status-actions">
+        <button class="btn btn-secondary" onclick="openLibraryModal()" style="padding: 5px 10px; font-size: 11px;">
+          📚 Gestionar Biblioteca (<span id="statusBarCount">0</span>)
+        </button>
+        <button class="btn btn-folder-header" onclick="actualizarBiblioteca()"
+          style="padding: 5px 10px; font-size: 11px;">
+          🔄 Actualizar Biblioteca
+        </button>
+        <button class="btn btn-dark" onclick="window.print()" style="padding: 5px 12px; font-size: 11px;">
+          🖨️ Mandar a Imprimir
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Presets Rápidos -->
+    <div class="presets-bar">
+      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase;">Plantillas
+          Rápidas:</span>
+        <button class="preset-chip" onclick="applyPreset('todo')">📖 Libro Completo</button>
+        <button class="preset-chip" onclick="applyPreset('cuadernillo-2')">✂️ 2 por hoja (con corte)</button>
+        <button class="preset-chip" onclick="applyPreset('horizontales')">↔️ Horizontales Emparejadas</button>
+        <button class="preset-chip" onclick="applyPreset('verticales')">↕️ Verticales Página Completa</button>
+        <button class="preset-chip" onclick="applyPreset('libro-8')">🌟 Cuadernillo 8 Páginas</button>
+      </div>
+
+      <div style="font-weight: 600; color: #475569;" id="summaryInfo">
+        Cargando páginas...
+      </div>
+    </div>
+
+    <!-- Pie para Plegar Rápido -->
+    <div class="settings-collapse-footer" onclick="toggleSettingsMenu(false)" title="Plegar este menú de ajustes">
+      <span>▴ Plegar y Ocultar Menú de Ajustes</span>
+    </div>
+  </div>
+
+  <!-- 4. Contenedor de Hojas para Imprimir -->
+  <main class="document-area" id="documentArea">
+    <!-- Se llena dinámicamente con JavaScript -->
+  </main>
+
+  <!-- 5. Modal de la Biblioteca de Dibujos y Administrador de Carpeta -->
+  <div class="modal-overlay" id="libraryModal" style="display: none;">
+    <div class="modal-container" style="max-width: 900px; width: 95%; max-height: 90vh;">
+      <div class="modal-header">
+        <div>
+          <h2 style="font-size: 18px; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+            <span>📚 Biblioteca de Dibujos</span>
+          </h2>
+          <p style="font-size: 12px; color: #64748b; margin-top: 2px;">
+            Elige qué dibujos van al libro y en qué orden. Las imágenes horizontales se ajustan a 2 por hoja con
+            corte punteado y las verticales a página completa.
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-folder-header" onclick="actualizarBiblioteca()"
+            style="padding: 6px 12px; font-size: 12px;" title="Vuelve a leer la carpeta biblioteca">
+            🔄 Actualizar
+          </button>
+          <button class="btn btn-secondary" onclick="closeLibraryModal()" style="padding: 6px 10px;" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+
+      <!-- Cómo añadir dibujos a la carpeta biblioteca/ -->
+      <div style="padding: 12px 24px 0; background: white;">
+        <div class="biblioteca-info" id="bibliotecaInfo"></div>
+      </div>
+
+      <!-- Barra de Filtros y Acciones en Lote -->
+      <div
+        style="padding: 8px 24px 12px; border-bottom: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: white;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: 1; min-width: 220px;">
+          <input type="text" id="librarySearchInput" placeholder="Buscar por nombre..." oninput="renderLibraryGrid()"
+            style="flex: 1 1 160px; min-width: 140px; max-width: 240px; padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none;">
+
+          <select id="libraryCategoryFilter" onchange="renderLibraryGrid()" aria-label="Filtrar por tema"
+            style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: white;">
+            <option value="">Todos los temas</option>
+          </select>
+
+          <select id="libraryOrientFilter" onchange="renderLibraryGrid()"
+            style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: white;">
+            <option value="all">Todas las orientaciones</option>
+            <option value="vertical">Solo Verticales (↕ 1 por hoja)</option>
+            <option value="horizontal">Solo Horizontales (↔ 2 por hoja)</option>
+          </select>
+
+          <select id="librarySortFilter" onchange="sortAndRenderLibrary(this.value)"
+            style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; background: white;">
+            <option value="default">Orden de Lista</option>
+            <option value="name-asc">Nombre (A - Z)</option>
+            <option value="horiz-first">Horizontales primero</option>
+            <option value="vert-first">Verticales primero</option>
+          </select>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px;">
+          <button class="btn btn-secondary" onclick="selectAllDrawings()"
+            style="padding: 4px 8px; font-size: 11px;">Marcar Todos</button>
+          <button class="btn btn-secondary" onclick="clearSelection()"
+            style="padding: 4px 8px; font-size: 11px; color: #dc2626;">Desmarcar</button>
+          <button class="btn btn-secondary" onclick="selectOnlyHorizontals()"
+            style="padding: 4px 8px; font-size: 11px;">Solo Horizontales</button>
+          <button class="btn btn-secondary" onclick="selectOnlyVerticals()"
+            style="padding: 4px 8px; font-size: 11px;">Solo Verticales</button>
+          <button class="btn btn-secondary" onclick="mostrarOcultas()" id="btnMostrarOcultas"
+            style="padding: 4px 8px; font-size: 11px; color: #4338ca;"
+            title="Vuelve a mostrar los dibujos que quitaste del libro">👁️ Mostrar ocultas</button>
+          <button class="btn btn-secondary" onclick="ordenOriginal()"
+            style="padding: 4px 8px; font-size: 11px; color: #4338ca;"
+            title="Vuelve al orden de los archivos en la carpeta">↺ Orden original</button>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Dibujos -->
+      <div class="modal-body" style="background: #f8fafc; padding: 20px; overflow-y: auto;">
+        <div class="drawings-grid" id="libraryGrid"></div>
+      </div>
+
+      <div class="modal-footer"
+        style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px 24px; border-top: 1px solid #e2e8f0;">
+        <div>
+          <span style="font-size: 13px; font-weight: 700; color: #4338ca;" id="modalSelectedSummary">0 dibujos
+            seleccionados</span>
+          <span style="font-size: 11px; color: #64748b; margin-left: 8px;" id="modalPagesEstimate">• Generará 0
+            páginas</span>
+        </div>
+        <button class="btn btn-primary" onclick="closeLibraryModal()">Listo, Armar Libro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Modal de Edición de Portada -->
+  <div class="modal-overlay" id="coverModal" style="display: none;">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; font-weight: 800; color: #1e293b;">✏️ Personalizar Portada</h3>
+        <button class="btn btn-secondary" onclick="closeCoverModal()" style="padding: 4px 8px;">✕</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+        <div>
+          <label style="font-weight: 700; display: block; margin-bottom: 4px;">Título del Libro:</label>
+          <input type="text" id="coverTitleInput"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        </div>
+        <div>
+          <label style="font-weight: 700; display: block; margin-bottom: 4px;">Subtítulo:</label>
+          <input type="text" id="coverSubtitleInput"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        </div>
+        <div>
+          <label style="font-weight: 700; display: block; margin-bottom: 4px;">Dedicatoria:</label>
+          <input type="text" id="coverDedicationInput"
+            style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        </div>
+        <div>
+          <label style="font-weight: 700; display: block; margin-bottom: 4px;">Nombre del Niño / Niña (o dejar vacío
+            para escribir a mano):</label>
+          <input type="text" id="coverOwnerInput" placeholder="Ej: Mateo / Lucía..."
+            style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px;">Parroquia / Comunidad:</label>
+            <input type="text" id="coverParishInput"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+          </div>
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px;">Año:</label>
+            <input type="text" id="coverYearInput"
+              style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end; gap: 8px;">
+        <button class="btn btn-secondary" onclick="closeCoverModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveCoverData()">Guardar Portada</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de la carpeta biblioteca/ (la genera actualizar_biblioteca.bat) -->
+  <script src="biblioteca/biblioteca.js"></script>
+
+  <!-- SCRIPT COMPLETO DE LA APLICACIÓN -->
+  <script>
+    // Dibujos de la carpeta biblioteca/ visibles en el libro (en orden) y los seleccionados
+    let appDrawings = [];
+    let selectedIds = [];
+    let appConfig = {
+      paperSize: 'letter',
+      marginPreset: 'libro',
+      ajustesVersion: 3,
+      layoutMode: 'smart',
+      showCutLines: true,
+      includeCover: false,
+      targetPagesCount: 'all',
+      showMarginsGuide: false,
+      autoRotate: true,
+      estirar: true,
+      marco: true,
+      relleno: '',
+      coverData: {
+        title: 'Mi Gran Libro Católico para Colorear',
+        subtitle: 'Historias Bíblicas, Jesús, María y los Santos',
+        dedication: 'Este libro pertenece con cariño a:',
+        ownerName: '',
+        parishOrSchool: 'Parroquia / Comunidad',
+        year: String(new Date().getFullYear())
+      }
+    };
+
+    // --- PERSISTENCIA DE AJUSTES (localStorage, tolerante a fallos) ---
+    const SETTINGS_KEY = 'pintablesCatolicos.settings.v1';
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(appConfig));
+      } catch (e) { /* almacenamiento no disponible: se ignora */ }
+    }
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== 'object') return;
+        const { coverData, ...rest } = saved;
+        Object.keys(rest).forEach(k => {
+          if (k in appConfig && typeof rest[k] === typeof appConfig[k]) appConfig[k] = rest[k];
+        });
+        // Ajustes guardados antes de los márgenes de 2 cm: se pasa al nuevo margen por defecto
+        if (!(saved.ajustesVersion >= 2)) appConfig.marginPreset = 'libro';
+        // Ajustes anteriores a v3: sin portada por defecto
+        if (!(saved.ajustesVersion >= 3)) appConfig.includeCover = false;
+        appConfig.ajustesVersion = 3;
+        if (coverData && typeof coverData === 'object') {
+          Object.keys(appConfig.coverData).forEach(k => {
+            if (typeof coverData[k] === 'string') appConfig.coverData[k] = coverData[k];
+          });
+        }
+      } catch (e) { /* datos corruptos: se usan los valores por defecto */ }
+    }
+
+    // Sincroniza los controles del panel de ajustes con appConfig
+    function syncControlsFromConfig() {
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      setVal('selectPaperSize', appConfig.paperSize);
+      setVal('selectMargins', appConfig.marginPreset);
+      setVal('selectLayoutMode', appConfig.layoutMode);
+      setVal('selectPagesCount', appConfig.targetPagesCount);
+
+      const cutBtn = document.getElementById('btnToggleCutLines');
+      if (cutBtn) {
+        cutBtn.classList.toggle('active', appConfig.showCutLines);
+        document.getElementById('lblCutLinesStatus').innerText = appConfig.showCutLines ? 'Activada' : 'Desactivada';
+      }
+      const coverBtn = document.getElementById('btnToggleCover');
+      if (coverBtn) {
+        coverBtn.classList.toggle('active-purple', appConfig.includeCover);
+        document.getElementById('lblCoverStatus').innerText = appConfig.includeCover ? 'Activada' : 'Desactivada';
+      }
+      const marcoBtn = document.getElementById('btnToggleMarco');
+      if (marcoBtn) {
+        marcoBtn.classList.toggle('active', appConfig.marco);
+        document.getElementById('lblMarcoStatus').innerText = appConfig.marco ? 'Activado' : 'Desactivado';
+      }
+      const estBtn = document.getElementById('btnToggleEstirar');
+      if (estBtn) {
+        estBtn.classList.toggle('active', appConfig.estirar);
+        document.getElementById('lblEstirarStatus').innerText = appConfig.estirar ? 'Activado' : 'Desactivado';
+      }
+      const rotBtn = document.getElementById('btnToggleAutoRotate');
+      if (rotBtn) {
+        rotBtn.classList.toggle('active', appConfig.autoRotate);
+        document.getElementById('lblAutoRotateStatus').innerText = appConfig.autoRotate ? 'Activado' : 'Desactivado';
+      }
+      const guideBtn = document.getElementById('btnToggleMarginsGuide');
+      if (guideBtn) guideBtn.classList.toggle('active', appConfig.showMarginsGuide);
+    }
+
+    // Ajusta @page y el tamaño físico de la hoja impresa según el papel elegido
+    function updatePrintPageStyle() {
+      const paper = PAPER_DIMS[appConfig.paperSize] || PAPER_DIMS.letter;
+      const cssSize = { letter: 'letter', a4: 'A4', legal: 'legal' }[appConfig.paperSize] || 'letter';
+      const styleEl = document.getElementById('dynamicPageStyle');
+      if (!styleEl) return;
+      styleEl.textContent = `
+        @media print {
+          @page { size: ${cssSize} portrait; margin: 0; }
+          html, body { width: ${paper.w}mm !important; }
+          .sheet-paper { width: ${paper.w}mm !important; height: ${paper.h}mm !important; }
+        }
+      `;
+    }
+
+    // Mantiene las barras pegajosas justo debajo de la cabecera (que puede ocupar 2 filas en móvil)
+    function updateHeaderOffset() {
+      const header = document.querySelector('.app-header');
+      if (header) document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+    }
+
+    // Dimensiones en milímetros
+    const PAPER_DIMS = {
+      letter: { w: 215.9, h: 279.4, name: 'Carta' },
+      a4: { w: 210.0, h: 297.0, name: 'A4' },
+      legal: { w: 215.9, h: 355.6, name: 'Oficio' }
+    };
+
+    const MARGIN_DIMS = {
+      libro: { top: 10, bottom: 10, left: 10, right: 10 },
+      normal: { top: 25.4, bottom: 25.4, left: 25.4, right: 25.4 },
+      narrow: { top: 12.7, bottom: 12.7, left: 12.7, right: 12.7 },
+      moderate: { top: 25.4, bottom: 25.4, left: 19.05, right: 19.05 },
+      minimal: { top: 10.0, bottom: 10.0, left: 10.0, right: 10.0 }
+    };
+
+    // --- MOTOR DE PAGINACIÓN ---
+    // Muestra el selector «Completar la última hoja con» solo cuando hace falta
+    function actualizarSelectorRelleno(selected) {
+      const pill = document.getElementById('pillRelleno');
+      const sel = document.getElementById('selectRelleno');
+      if (!pill || !sel) return;
+      const hace_falta = !['1-per-page', '4-per-page'].includes(appConfig.layoutMode) && selected.length > 1 && selected.length % 2 === 1;
+      pill.style.display = hace_falta ? '' : 'none';
+      if (!hace_falta) return;
+      const ultimo = selected[selected.length - 1];
+      const actual = dibujoDeRelleno(selected);
+      sel.innerHTML = selected.filter(d => d.id !== ultimo.id)
+        .map(d => `<option value="${escapeHtml(d.id)}"${d.id === actual.id ? ' selected' : ''}>${escapeHtml(d.title)}</option>`).join('');
+    }
+
+    // Dibujo que se repite para completar la última hoja cuando el número es impar.
+    // Nunca el mismo que ya ocupa esa hoja (el último del libro).
+    function dibujoDeRelleno(selected) {
+      const ultimo = selected[selected.length - 1];
+      const elegido = selected.find(d => d.id === appConfig.relleno && d.id !== ultimo.id);
+      return elegido || selected[0];
+    }
+
+    function computePages() {
+      const selected = appDrawings.filter(d => selectedIds.includes(d.id));
+      const pages = [];
+
+      // 1. Portada
+      if (appConfig.includeCover) {
+        pages.push({
+          isCover: true,
+          coverData: appConfig.coverData
+        });
+      }
+
+      // 2. Páginas de Contenido
+      const mode = appConfig.layoutMode;
+      let contentPages = [];
+
+      if (mode === '1-per-page') {
+        // Única opción con un dibujo por hoja (a página completa)
+        for (let i = 0; i < selected.length; i++) {
+          contentPages.push({ layout: 'single', slots: [selected[i]] });
+        }
+      } else if (mode === '4-per-page') {
+        // Tarjetas 2x2. Ninguna hoja queda con un solo dibujo: si sobra uno, la hoja
+        // anterior cede uno (quedan 3 + 2).
+        const grupos = [];
+        for (let i = 0; i < selected.length; i += 4) grupos.push(selected.slice(i, i + 4));
+        const ultimo = grupos[grupos.length - 1];
+        if (grupos.length > 1 && ultimo.length === 1) ultimo.unshift(grupos[grupos.length - 2].pop());
+        grupos.forEach(g => contentPages.push({ layout: g.length === 1 ? 'single' : 'four-grid', slots: g }));
+      } else {
+        // Inteligente / 2 por hoja: todos los dibujos de dos en dos, en el orden del libro,
+        // con línea de corte. Cada dibujo se gira si así se ve más grande en su mitad de hoja.
+        // Si el total es impar, la última hoja se completa repitiendo un dibujo (el elegido en
+        // Ajustes o, por defecto, el primero del libro), así todas las hojas llevan 2.
+        const n = selected.length;
+        for (let i = 0; i < n; i += 2) {
+          if (i + 1 < n) {
+            contentPages.push({ layout: 'two-stacked', slots: [selected[i], selected[i + 1]] });
+          } else if (n === 1) {
+            contentPages.push({ layout: 'single', slots: [selected[i]] });  // un único dibujo en todo el libro
+          } else {
+            const repetido = dibujoDeRelleno(selected);
+            contentPages.push({ layout: 'two-stacked', slots: [selected[i], repetido], repetido });
+          }
+        }
+      }
+
+      // Limitar cantidad si se seleccionó libro de X páginas
+      const fullContentCount = contentPages.length;
+      if (appConfig.targetPagesCount !== 'all') {
+        const target = parseInt(appConfig.targetPagesCount, 10);
+        const maxContent = appConfig.includeCover ? Math.max(1, target - 1) : target;
+        contentPages = contentPages.slice(0, maxContent);
+      }
+
+      // Numeración de páginas
+      const totalPages = (appConfig.includeCover ? 1 : 0) + contentPages.length;
+      contentPages.forEach((p, idx) => {
+        p.pageNumber = (appConfig.includeCover ? 2 : 1) + idx;
+        p.totalPages = totalPages;
+        pages.push(p);
+      });
+
+      // Dibujos que quedaron fuera por el límite de páginas del libro
+      pages.omittedContentPages = fullContentCount - contentPages.length;
+      return pages;
+    }
+
+    // --- RENDERIZADO DEL DOCUMENTO ---
+    function renderDocument() {
+      const container = document.getElementById('documentArea');
+      const pages = computePages();
+      const paper = PAPER_DIMS[appConfig.paperSize] || PAPER_DIMS.letter;
+      const margins = MARGIN_DIMS[appConfig.marginPreset] || MARGIN_DIMS.normal;
+
+      // Calcular porcentajes exactos de márgenes de documento
+      const topPct = (margins.top / paper.h) * 100;
+      const bottomPct = (margins.bottom / paper.h) * 100;
+      const leftPct = (margins.left / paper.w) * 100;
+      const rightPct = (margins.right / paper.w) * 100;
+
+      // Actualizar resumen
+      const selected = appDrawings.filter(d => selectedIds.includes(d.id));
+      const nVert = selected.filter(d => d.orientation === 'vertical').length;
+      const nHoriz = selected.filter(d => d.orientation === 'horizontal').length;
+      const omitted = pages.omittedContentPages || 0;
+      document.getElementById('summaryInfo').innerHTML = `
+        📄 <strong>${pages.length} hojas listas</strong> (${selected.length} dibujos: ${nVert} verticales, ${nHoriz} horizontales)
+        ${omitted > 0 ? `<span class="pages-warning"> • ⚠️ ${omitted} hoja${omitted === 1 ? '' : 's'} de dibujos fuera del límite del libro</span>` : ''}
+      `;
+      document.getElementById('headerSelectedCount').innerText = selected.length;
+      updatePrintPageStyle();
+      actualizarSelectorRelleno(selected);
+      saveSettings();
+
+      if (selected.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 20px; border: 1px solid #cbd5e1; max-width: 450px;">
+            <div style="font-size: 40px; margin-bottom: 12px;">🎨</div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #1e293b;">${bibliotecaTodas.length ? 'No hay dibujos seleccionados' : 'Tu biblioteca está vacía'}</h3>
+            <p style="font-size: 13px; color: #64748b; margin: 8px 0 20px;">${bibliotecaTodas.length
+              ? 'Abre la biblioteca para escoger qué dibujos deseas imprimir en tu libro.'
+              : 'Copia tus dibujos en la carpeta <strong>biblioteca</strong> del proyecto, haz doble clic en <strong>actualizar_biblioteca.bat</strong> y pulsa «Actualizar».'}</p>
+            <button class="btn btn-primary" onclick="openLibraryModal()">Abrir Biblioteca</button>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      pages.forEach((page, index) => {
+        if (page.isCover) {
+          // --- PORTADA PARA COLOREAR ---
+          html += `
+            <div class="sheet-wrapper">
+              <div class="sheet-toolbar no-print">
+                <span style="font-weight: 700; color: #1e293b;">Portada del Libro</span>
+                <span class="page-tag" style="background: #f59e0b;">Página 1</span>
+              </div>
+              <div class="sheet-paper" style="aspect-ratio: ${paper.w} / ${paper.h};">
+                <div class="sheet-content" style="top: ${topPct}%; bottom: ${bottomPct}%; left: ${leftPct}%; right: ${rightPct}%;">
+                  <div class="cover-box">
+                    <div style="text-align: center; z-index: 10;">
+                      <h2 style="font-size: 26px; font-weight: 900; letter-spacing: 1px; color: #0f172a; text-transform: uppercase; font-family: serif;">
+                        ${escapeHtml(page.coverData.title)}
+                      </h2>
+                      <p style="font-size: 13px; font-weight: 600; color: #475569; margin-top: 4px;">
+                        ${escapeHtml(page.coverData.subtitle)}
+                      </p>
+                    </div>
+
+                    <div style="z-index: 10; margin: auto 0; text-align: center;">
+                      <svg viewBox="0 0 160 220" style="width: 130px; height: 170px; display: inline-block;">
+                        <path d="M 65 10 L 95 10 L 95 60 L 145 60 L 145 90 L 95 90 L 95 210 L 65 210 L 65 90 L 15 90 L 15 60 L 65 60 Z" fill="#ffffff" stroke="#0f172a" stroke-width="4" stroke-linejoin="round" />
+                        <line x1="80" y1="2" x2="80" y2="8" stroke="#0f172a" stroke-width="2" stroke-dasharray="2,2" />
+                        <line x1="148" y1="75" x2="156" y2="75" stroke="#0f172a" stroke-width="2" stroke-dasharray="2,2" />
+                        <line x1="4" y1="75" x2="12" y2="75" stroke="#0f172a" stroke-width="2" stroke-dasharray="2,2" />
+                        <text x="80" y="80" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="bold" font-family="serif">JHS</text>
+                      </svg>
+                      <div style="font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px;">Dibuja y Colorea</div>
+                    </div>
+
+                    <div style="width: 100%; text-align: center; z-index: 10; margin-bottom: 4px;">
+                      <p style="font-size: 12px; font-weight: 700; color: #334155;">${escapeHtml(page.coverData.dedication)}</p>
+                      <div style="width: 75%; margin: 8px auto 0; border-bottom: 2px solid #0f172a; padding-bottom: 2px;">
+                        <span style="font-size: 16px; font-weight: 800; font-family: monospace; color: #0f172a;">
+                          ${page.coverData.ownerName ? escapeHtml(page.coverData.ownerName) : '______________________________________'}
+                        </span>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; width: 75%; margin: 10px auto 0; font-size: 11px; color: #64748b;">
+                        <span>${escapeHtml(page.coverData.parishOrSchool)}</span>
+                        <span>Año: ${escapeHtml(page.coverData.year)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // --- PÁGINAS DE DIBUJOS ---
+        // Cada dibujo ocupa su celda (hoja entera, mitad o cuarto) menos el margen elegido por cada
+        // lado; la línea de corte va en el centro exacto del papel. Así, al cortar, cada pieza queda
+        // con el mismo margen alrededor de su dibujo.
+        const g = geometriaHoja(page.layout, paper, margins);
+        const girados = page.slots.filter((d, k) => d && g.huecos[k] && debeGirar(d, g.huecos[k].w, g.huecos[k].h)).length;
+        const pctX = v => (100 * v / paper.w).toFixed(4);
+        const pctY = v => (100 * v / paper.h).toFixed(4);
+
+        const layoutDesc =
+          (page.layout === 'single' ? '1 dibujo (página completa)' :
+            page.layout === 'two-stacked' ? '2 dibujos (con línea de corte)' :
+              `${page.slots.length} dibujos (cuadrícula 2x2)`) +
+          (girados ? ` • ${girados} girado${girados === 1 ? '' : 's'} para ${appConfig.estirar ? 'deformarse menos' : 'aprovechar la hoja'}` : '') +
+          (page.repetido ? ` • se repite «${escapeHtml(page.repetido.title)}» para completar la hoja` : '');
+
+        const celdas = g.huecos.map((h, k) => `
+              <div class="celda-dibujo" style="left: ${pctX(h.x)}%; top: ${pctY(h.y)}%; width: ${pctX(h.w)}%; height: ${pctY(h.h)}%;">
+                ${appConfig.showMarginsGuide ? '<div class="margins-guide no-print" style="inset: 0;"></div>' : ''}
+                ${page.slots[k] ? renderDrawingSlotHtml(page.slots[k], h.w, h.h) : ''}
+              </div>`).join('');
+
+        // Solo la línea punteada de corte, sin símbolos ni texto
+        const cortes = !appConfig.showCutLines ? '' :
+          (g.filas === 2 ? `
+              <div class="cut-line-horizontal" style="left: 2%; right: 2%;"><div class="dashed-border"></div></div>` : '') +
+          (g.cols === 2 ? `
+              <div class="cut-line-vertical" style="top: 2%; bottom: 2%;"><div class="dashed-border"></div></div>` : '');
+
+        html += `
+          <div class="sheet-wrapper">
+            <div class="sheet-toolbar no-print">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="page-tag">Hoja ${page.pageNumber} de ${page.totalPages}</span>
+                <span style="font-size: 11px; color: #64748b;">${layoutDesc}</span>
+              </div>
+            </div>
+
+            <div class="sheet-paper${appConfig.estirar ? ' estirar' : ''}" style="aspect-ratio: ${paper.w} / ${paper.h}; --papel-mm: ${paper.w}; --marco-mm: ${GROSOR_MARCO_MM};">
+              ${celdas}
+              ${cortes}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // HTML de la imagen del dibujo. Si está girada, se gira con CSS dentro de su recuadro.
+    function drawingMediaHtml(drawing, imgStyle) {
+      if (!drawing.imageUrl) return '';
+      const rc = drawing.recorte;
+      const vista = rc ? `object-view-box: inset(${(rc.t * 100).toFixed(2)}% ${(rc.r * 100).toFixed(2)}% ${(rc.b * 100).toFixed(2)}% ${(rc.l * 100).toFixed(2)}%);` : '';
+      const img = `<img src="${escapeHtml(drawing.imageUrl)}" alt="${escapeHtml(drawing.title)}" decoding="async"`;
+      if (drawing.giro) return `<div class="giro-wrap g${drawing.giro}">${img} style="${vista}"></div>`;
+      return `${img} style="${imgStyle} ${vista}">`;
+    }
+
+    // Id seguro para usar dentro de onclick="..." (las rutas pueden tener espacios o apóstrofos)
+    const jsId = id => escapeHtml(JSON.stringify(id));
+
+    // Geometría física (mm) de una hoja: cada dibujo ocupa su celda (la hoja entera, la mitad o un
+    // cuarto del papel) menos el margen elegido por cada lado. Las líneas de corte van en el centro.
+    function geometriaHoja(layout, paper, m) {
+      const [filas, cols] = layout === 'four-grid' ? [2, 2] : layout === 'two-stacked' ? [2, 1] : [1, 1];
+      const cw = paper.w / cols, ch = paper.h / filas;
+      const huecos = [];
+      for (let f = 0; f < filas; f++) {
+        for (let c = 0; c < cols; c++) {
+          huecos.push({ x: c * cw + m.left, y: f * ch + m.top, w: cw - m.left - m.right, h: ch - m.top - m.bottom });
+        }
+      }
+      return { filas, cols, huecos, hueco: [huecos[0].w, huecos[0].h] };
+    }
+
+    // Superficie (relativa) que ocupa una imagen de proporción r = ancho/alto dentro de un hueco W×H
+    function superficieEnHueco(r, W, H) {
+      return r > W / H ? (W * W) / r : H * H * r;
+    }
+
+    // ¿Se ve más grande girada 90°? (se exige un 8 % de mejora para no girar por nada)
+    function debeGirar(d, W, H) {
+      if (!appConfig.autoRotate || !W || !H || !d.width || !d.height) return false;
+      const r = d.width / d.height;
+      if (appConfig.estirar) {
+        // Al estirar, el dibujo siempre llena el hueco: se gira si así se deforma menos
+        const deformacion = q => Math.abs(Math.log(q / (W / H)));
+        return deformacion(1 / r) < deformacion(r) - 0.05;
+      }
+      return superficieEnHueco(1 / r, W, H) > superficieEnHueco(r, W, H) * 1.08;
+    }
+
+    function renderDrawingSlotHtml(drawing, W, H) {
+      if (!drawing) return '';
+      // Tamaño final del dibujo en su hueco (lleno si «Estirar», o ajustado sin deformar)
+      const { w, h } = encajar(drawing, W, H);
+      // Giro automático solo para este hueco
+      if (debeGirar(drawing, W, H)) drawing = { ...drawing, giro: ((drawing.giro || 0) + 90) % 360 };
+      const content = drawingMediaHtml(drawing, 'width:100%; height:100%; object-fit:fill; display:block;');
+      // El recuadro tiene exactamente el tamaño del dibujo: el marco lo rodea a él, no al hueco
+      return `
+        <div class="drawing-box" title="${escapeHtml(drawing.title)}">
+          <div class="drawing-svg-wrap${appConfig.marco ? ' con-marco' : ''}" style="width: ${(100 * w / W).toFixed(3)}%; height: ${(100 * h / H).toFixed(3)}%;">
+            ${content}
+          </div>
+        </div>
+      `;
+    }
+
+    // --- GESTIÓN DE MENÚ PLEGABLE DE AJUSTES (SIEMPRE PLEGADO POR DEFECTO) ---
+    let isSettingsMenuOpen = false;
+
+    function toggleSettingsMenu(forceState) {
+      const menu = document.getElementById('collapsibleSettings');
+      const toggleBtnText = document.getElementById('settingsToggleText');
+      const toggleBtnArrow = document.getElementById('settingsToggleArrow');
+      const headerArrow = document.getElementById('headerSettingsArrow');
+      const headerBtn = document.getElementById('headerSettingsToggle');
+
+      if (typeof forceState === 'boolean') {
+        isSettingsMenuOpen = forceState;
+      } else {
+        isSettingsMenuOpen = !isSettingsMenuOpen;
+      }
+
+      if (isSettingsMenuOpen) {
+        if (menu) menu.style.display = 'block';
+        if (toggleBtnText) toggleBtnText.innerText = 'Plegar Menú';
+        if (toggleBtnArrow) {
+          toggleBtnArrow.innerText = '▴';
+          toggleBtnArrow.style.transform = 'rotate(180deg)';
+        }
+        if (headerArrow) headerArrow.innerText = '▴';
+        if (headerBtn) {
+          headerBtn.style.background = 'var(--slate-200)';
+          headerBtn.style.borderColor = 'var(--primary)';
+        }
+      } else {
+        if (menu) menu.style.display = 'none';
+        if (toggleBtnText) toggleBtnText.innerText = 'Desplegar Ajustes';
+        if (toggleBtnArrow) {
+          toggleBtnArrow.innerText = '▾';
+          toggleBtnArrow.style.transform = 'rotate(0deg)';
+        }
+        if (headerArrow) headerArrow.innerText = '▾';
+        if (headerBtn) {
+          headerBtn.style.background = '';
+          headerBtn.style.borderColor = '';
+        }
+      }
+    }
+
+    function updateCollapsedSummaryBadges() {
+      const container = document.getElementById('collapsedSummaryBadges');
+      if (!container) return;
+
+      const paperNames = { letter: 'Carta (8.5x11")', a4: 'A4', legal: 'Oficio' };
+      const marginNames = {
+        libro: '1 cm',
+        normal: 'Word 2.54cm',
+        narrow: 'Estrecho 1.27cm',
+        moderate: 'Moderado',
+        minimal: 'Mínimo 1.0cm'
+      };
+      const layoutNames = {
+        smart: '2 por hoja',
+        '1-per-page': '1 por hoja',
+        '2-per-page': '2 por hoja',
+        '4-per-page': '4 por hoja'
+      };
+
+      const paperLabel = paperNames[appConfig.paperSize] || appConfig.paperSize;
+      const marginLabel = marginNames[appConfig.marginPreset] || appConfig.marginPreset;
+      const layoutLabel = layoutNames[appConfig.layoutMode] || appConfig.layoutMode;
+      const cutLabel = appConfig.showCutLines ? '✂️ Corte ON' : '✂️ Corte OFF';
+      const coverLabel = appConfig.includeCover ? '📖 Portada ON' : '📖 Portada OFF';
+      const countLabel = `📁 ${selectedIds.length} selec.`;
+
+      container.innerHTML = `
+        <span class="mini-pill" title="Tamaño de Hoja">📄 ${escapeHtml(paperLabel)}</span>
+        <span class="mini-pill" title="Márgenes de Documento">📐 ${escapeHtml(marginLabel)}</span>
+        <span class="mini-pill highlight" title="Distribución de Dibujos">⚡ ${escapeHtml(layoutLabel)}</span>
+        <span class="mini-pill ${appConfig.autoRotate ? 'pill-active' : ''}" title="Giro automático de los dibujos">🔄 Giro ${appConfig.autoRotate ? 'auto' : 'OFF'}</span>
+        <span class="mini-pill ${appConfig.marco ? 'pill-active' : ''}" title="Marco negro alrededor de cada dibujo">🖼️ Marco ${appConfig.marco ? 'ON' : 'OFF'}</span>
+        <span class="mini-pill ${appConfig.estirar ? 'pill-active' : ''}" title="Estirar los dibujos hasta los márgenes">↔️ ${appConfig.estirar ? 'Estirado' : 'Proporción'}</span>
+        <span class="mini-pill ${appConfig.showCutLines ? 'pill-active' : ''}" title="Línea punteada para tijera">${cutLabel}</span>
+        <span class="mini-pill ${appConfig.includeCover ? 'pill-purple' : ''}" title="Portada para colorear">${coverLabel}</span>
+        <span class="mini-pill pill-subtle" title="Dibujos activos para imprimir">${countLabel}</span>
+      `;
+    }
+
+    function updateDocumentSettings() {
+      appConfig.paperSize = document.getElementById('selectPaperSize').value;
+      appConfig.marginPreset = document.getElementById('selectMargins').value;
+      appConfig.layoutMode = document.getElementById('selectLayoutMode').value;
+      appConfig.targetPagesCount = document.getElementById('selectPagesCount').value;
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleCutLines() {
+      appConfig.showCutLines = !appConfig.showCutLines;
+      const btn = document.getElementById('btnToggleCutLines');
+      const lbl = document.getElementById('lblCutLinesStatus');
+      if (appConfig.showCutLines) {
+        btn.classList.add('active');
+        lbl.innerText = 'Activada';
+      } else {
+        btn.classList.remove('active');
+        lbl.innerText = 'Desactivada';
+      }
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleCover() {
+      appConfig.includeCover = !appConfig.includeCover;
+      const btn = document.getElementById('btnToggleCover');
+      const lbl = document.getElementById('lblCoverStatus');
+      if (appConfig.includeCover) {
+        btn.classList.add('active-purple');
+        lbl.innerText = 'Activada';
+      } else {
+        btn.classList.remove('active-purple');
+        lbl.innerText = 'Desactivada';
+      }
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleMarco() {
+      appConfig.marco = !appConfig.marco;
+      syncControlsFromConfig();
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleEstirar() {
+      appConfig.estirar = !appConfig.estirar;
+      syncControlsFromConfig();
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleAutoRotate() {
+      appConfig.autoRotate = !appConfig.autoRotate;
+      syncControlsFromConfig();
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    function toggleMarginsGuide() {
+      appConfig.showMarginsGuide = !appConfig.showMarginsGuide;
+      const btn = document.getElementById('btnToggleMarginsGuide');
+      if (appConfig.showMarginsGuide) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+      renderDocument();
+    }
+
+    function applyPreset(preset) {
+      if (preset === 'cuadernillo-2') {
+        document.getElementById('selectLayoutMode').value = 'smart';
+        appConfig.layoutMode = 'smart';
+        if (!appConfig.showCutLines) toggleCutLines();
+      } else if (preset === 'horizontales') {
+        selectOnlyHorizontals();
+        document.getElementById('selectLayoutMode').value = 'smart';
+        appConfig.layoutMode = 'smart';
+        if (!appConfig.showCutLines) toggleCutLines();
+      } else if (preset === 'verticales') {
+        selectOnlyVerticals();
+        document.getElementById('selectLayoutMode').value = '1-per-page';
+        appConfig.layoutMode = '1-per-page';
+      } else if (preset === 'libro-8') {
+        selectAllDrawings();
+        document.getElementById('selectLayoutMode').value = 'smart';
+        document.getElementById('selectPagesCount').value = '8';
+        appConfig.layoutMode = 'smart';
+        appConfig.targetPagesCount = '8';
+        if (!appConfig.includeCover) toggleCover();
+      } else if (preset === 'todo') {
+        selectAllDrawings();
+        document.getElementById('selectLayoutMode').value = 'smart';
+        document.getElementById('selectPagesCount').value = 'all';
+        appConfig.layoutMode = 'smart';
+        appConfig.targetPagesCount = 'all';
+      }
+      updateCollapsedSummaryBadges();
+      renderDocument();
+    }
+
+    // --- BIBLIOTECA MODAL Y GESTIÓN DE CARPETA E IMÁGENES ---
+    function openLibraryModal() {
+      document.getElementById('libraryModal').style.display = 'flex';
+      renderBibliotecaInfo();
+      renderLibraryGrid();
+    }
+
+    function closeLibraryModal() {
+      document.getElementById('libraryModal').style.display = 'none';
+      renderDocument();
+    }
+
+    function renderLibraryGrid() {
+      const grid = document.getElementById('libraryGrid');
+      const search = (document.getElementById('librarySearchInput') ? document.getElementById('librarySearchInput').value : '').toLowerCase();
+      const orient = document.getElementById('libraryOrientFilter') ? document.getElementById('libraryOrientFilter').value : 'all';
+
+      // Filtro por tema (subcarpetas de biblioteca/): se rellena con las categorías existentes
+      const catSel = document.getElementById('libraryCategoryFilter');
+      let tema = '';
+      if (catSel) {
+        const temas = [...new Set(appDrawings.map(d => d.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+        tema = temas.includes(catSel.value) ? catSel.value : '';
+        catSel.innerHTML = '<option value="">Todos los temas</option>' +
+          temas.map(t => `<option value="${escapeHtml(t)}"${t === tema ? ' selected' : ''}>${escapeHtml(t)} (${appDrawings.filter(d => d.category === t).length})</option>`).join('');
+        catSel.style.display = temas.length ? '' : 'none';
+      }
+
+      const filtered = appDrawings.filter(d => {
+        const matchesSearch = d.title.toLowerCase().includes(search) || (d.category && d.category.toLowerCase().includes(search));
+        let matchesOrient = true;
+        if (orient === 'vertical') matchesOrient = d.orientation === 'vertical';
+        else if (orient === 'horizontal') matchesOrient = d.orientation === 'horizontal';
+        return matchesSearch && matchesOrient && (!tema || d.category === tema);
+      });
+
+      // Cálculo exacto de páginas con el mismo motor de paginación del documento
+      const selDrawings = appDrawings.filter(d => selectedIds.includes(d.id));
+      const horizCount = selDrawings.filter(d => d.orientation === 'horizontal').length;
+      const vertCount = selDrawings.filter(d => d.orientation === 'vertical').length;
+      const estPages = selDrawings.length ? computePages().length : 0;
+      const paperName = (PAPER_DIMS[appConfig.paperSize] || PAPER_DIMS.letter).name;
+
+      document.getElementById('modalSelectedSummary').innerText = `${selectedIds.length} de ${appDrawings.length} dibujos seleccionados`;
+      const estEl = document.getElementById('modalPagesEstimate');
+      if (estEl) estEl.innerText = `• Generará ${estPages} hoja${estPages === 1 ? '' : 's'} ${paperName} (${horizCount} horizontales, ${vertCount} verticales)`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+            <div style="font-size: 36px; margin-bottom: 8px;">📁</div>
+            <strong style="font-size: 15px; color: #1e293b;">${appDrawings.length ? 'No hay imágenes que coincidan' : 'La biblioteca está vacía'}</strong>
+            <p style="font-size: 12px; margin-top: 4px;">${appDrawings.length ? 'Prueba con otra búsqueda o filtro.' : 'Sigue los pasos de arriba para añadir dibujos a la carpeta <code>biblioteca</code>.'}</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((d, index) => {
+        const isSelected = selectedIds.includes(d.id);
+        const isHoriz = d.orientation === 'horizontal';
+        const preview = drawingMediaHtml(d, 'max-height: 110px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;');
+
+        return `
+          <div class="card-drawing ${isSelected ? 'selected' : ''}" onclick="toggleDrawingSelection(${jsId(d.id)})"
+            data-id="${escapeHtml(d.id)}" role="checkbox" aria-checked="${isSelected}" tabindex="0" aria-label="${escapeHtml(d.title)}"
+            onkeydown="if((event.key==='Enter'||event.key===' ') && event.target===this){toggleDrawingSelection(${jsId(d.id)}); event.preventDefault();}">
+            <div class="card-check">✓</div>
+            <div class="card-preview">
+              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                ${preview}
+              </div>
+            </div>
+            <div class="card-info">
+              <h4 title="${escapeHtml(d.title)}">${escapeHtml(d.title)}</h4>
+              ${d.category ? `<div class="card-cat" title="Tema: ${escapeHtml(d.category)}">📁 ${escapeHtml(d.category)}</div>` : ''}
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
+                <button class="badge-orient ${isHoriz ? 'badge-horiz' : 'badge-vert'}" 
+                  onclick="toggleDrawingOrientation(${jsId(d.id)}, event)" 
+                  title="Haz clic para cambiar orientación entre Horizontal y Vertical"
+                  style="border: none; cursor: pointer;">
+                  ${isHoriz ? '↔ Horizontal' : '↕ Vertical'}
+                </button>
+                <span style="font-size: 9px; color: #94a3b8;">${d.width}×${d.height}</span>
+              </div>
+            </div>
+            <!-- Barra de Herramientas de Tarjeta -->
+            <div class="card-actions-bar" onclick="event.stopPropagation()">
+              <div style="display: flex; gap: 3px;">
+                <button class="card-btn" onclick="rotateDrawing(${jsId(d.id)}, event)" title="Girar imagen 90°">↻ Girar</button>
+                <button class="card-btn" onclick="moveDrawing(${jsId(d.id)}, -1, event)" title="Mover antes en el orden del libro">⬆</button>
+                <button class="card-btn" onclick="moveDrawing(${jsId(d.id)}, 1, event)" title="Mover después en el orden del libro">⬇</button>
+              </div>
+              <button class="card-btn btn-del" onclick="deleteDrawing(${jsId(d.id)}, event)" title="Quitar del libro (el archivo no se borra)">🗑</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleDrawingSelection(id) {
+      if (selectedIds.includes(id)) {
+        selectedIds = selectedIds.filter(dId => dId !== id);
+      } else {
+        selectedIds.push(id);
+      }
+      const hadFocus = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.id === id;
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+      if (hadFocus) {
+        const card = document.querySelector(`.card-drawing[data-id="${CSS.escape(id)}"]`);
+        if (card) card.focus();
+      }
+    }
+
+    function selectAllDrawings() {
+      selectedIds = appDrawings.map(d => d.id);
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+    }
+
+    function selectOnlyHorizontals() {
+      selectedIds = appDrawings.filter(d => d.orientation === 'horizontal').map(d => d.id);
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+    }
+
+    function selectOnlyVerticals() {
+      selectedIds = appDrawings.filter(d => d.orientation === 'vertical').map(d => d.id);
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+    }
+
+    function clearSelection() {
+      selectedIds = [];
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+    }
+
+    // --- BIBLIOTECA: CARPETA biblioteca/ DEL PROYECTO ---
+    // La lista de archivos la genera actualizar_biblioteca.bat en biblioteca/biblioteca.js
+    // (window.BIBLIOTECA). Lo que el usuario cambia aquí (orden, giros, orientación, ocultas y
+    // selección) se recuerda en este navegador; los archivos de la carpeta nunca se modifican.
+    const PREFS_KEY = 'pintablesCatolicos.biblioteca.v1';
+    let libPrefs = { orden: [], ocultas: [], deseleccionadas: [], orientacion: {}, giro: {} };
+    let libEstado = { generado: '', total: 0, fallidas: [], sinLista: false };
+    let bibliotecaTodas = [];  // todas las imágenes de la carpeta, en el orden de la lista
+
+    function loadLibPrefs() {
+      try {
+        const p = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+        if (p && typeof p === 'object') {
+          for (const k of ['orden', 'ocultas', 'deseleccionadas']) if (Array.isArray(p[k])) libPrefs[k] = p[k];
+          for (const k of ['orientacion', 'giro']) if (p[k] && typeof p[k] === 'object') libPrefs[k] = p[k];
+        }
+      } catch (e) { /* almacenamiento no disponible o datos corruptos */ }
+    }
+
+    function saveLibPrefs() {
+      libPrefs.orden = appDrawings.map(d => d.id);
+      libPrefs.deseleccionadas = appDrawings.filter(d => !selectedIds.includes(d.id)).map(d => d.id);
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify(libPrefs)); } catch (e) { /* se ignora */ }
+    }
+
+    // Ruta relativa a index.html, codificada por tramos (espacios, tildes, ñ...)
+    const rutaImagen = archivo => archivo.split('/').map(encodeURIComponent).join('/');
+
+    // Fracciones de blanco sobrante en cada borde {l, t, r, b}. Necesita http (Live Server): con
+    // doble clic (file://) el navegador no deja leer los píxeles y la imagen se usa entera.
+    function medirBlanco(img) {
+      try {
+        const k = Math.min(1, 400 / Math.max(img.naturalWidth, img.naturalHeight));
+        const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        const ctx = cv.getContext('2d', { willReadFrequently: true });
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        const px = ctx.getImageData(0, 0, w, h).data;
+        let x0 = w, y0 = h, x1 = -1, y1 = -1;
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const i = (y * w + x) * 4;
+            if (px[i] * 0.299 + px[i + 1] * 0.587 + px[i + 2] * 0.114 < 200) {
+              if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+            }
+          }
+        }
+        if (x1 < 0) return null;
+        const pad = 0.006;  // pequeño respiro para no cortar el trazo
+        const r = {
+          l: Math.max(0, x0 / w - pad), t: Math.max(0, y0 / h - pad),
+          r: Math.max(0, (w - 1 - x1) / w - pad), b: Math.max(0, (h - 1 - y1) / h - pad)
+        };
+        return (r.l + r.t + r.r + r.b) > 0.004 ? r : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function cargarImagen(entrada) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve({ entrada, w: img.naturalWidth || 800, h: img.naturalHeight || 600, recorte: medirBlanco(img) });
+        img.onerror = () => resolve(null);
+        img.src = rutaImagen(entrada.archivo);
+      });
+    }
+
+    const orientacionAuto = (w, h) => (w > h * 1.05 ? 'horizontal' : 'vertical');
+
+    function construirDibujo(entrada, w0, h0, recorte) {
+      // Medidas del dibujo sin el blanco sobrante (la proporción real del dibujo)
+      const w = recorte ? w0 * (1 - recorte.l - recorte.r) : w0;
+      const h = recorte ? h0 * (1 - recorte.t - recorte.b) : h0;
+      const giro = (((libPrefs.giro[entrada.archivo] || 0) % 360) + 360) % 360;
+      const [ew, eh] = giro % 180 ? [h, w] : [w, h];
+      return {
+        id: entrada.archivo,
+        title: entrada.titulo || entrada.archivo,
+        category: entrada.categoria || '',
+        imageUrl: rutaImagen(entrada.archivo),
+        width: ew, height: eh, aspect: ew / eh, giro, recorte,
+        orientation: libPrefs.orientacion[entrada.archivo] || orientacionAuto(ew, eh)
+      };
+    }
+
+    async function cargarBiblioteca() {
+      const datos = window.BIBLIOTECA;
+      libEstado.sinLista = !datos || !Array.isArray(datos.imagenes);
+      const lista = libEstado.sinLista ? [] : datos.imagenes.filter(e => e && typeof e.archivo === 'string');
+      libEstado.generado = (datos && datos.generado) || '';
+      const res = await Promise.all(lista.map(cargarImagen));
+      libEstado.fallidas = lista.filter((e, i) => !res[i]).map(e => e.archivo);
+      bibliotecaTodas = res.filter(Boolean).map(r => construirDibujo(r.entrada, r.w, r.h, r.recorte));
+      libEstado.total = bibliotecaTodas.length;
+      aplicarPreferencias();
+    }
+
+    // Orden guardado (las imágenes nuevas van al final, en el orden de la carpeta) y selección
+    function aplicarPreferencias() {
+      const pos = new Map(libPrefs.orden.map((id, i) => [id, i]));
+      const base = new Map(bibliotecaTodas.map((d, i) => [d.id, i]));
+      const clave = d => (pos.has(d.id) ? pos.get(d.id) : 1e6 + base.get(d.id));
+      appDrawings = bibliotecaTodas.filter(d => !libPrefs.ocultas.includes(d.id)).sort((a, b) => clave(a) - clave(b));
+      selectedIds = appDrawings.filter(d => !libPrefs.deseleccionadas.includes(d.id)).map(d => d.id);
+    }
+
+    function refrescar() {
+      saveLibPrefs();
+      updateCounters();
+      renderLibraryGrid();
+      renderDocument();
+    }
+
+    function actualizarBiblioteca() {
+      // Vuelve a leer biblioteca/biblioteca.js (generado por actualizar_biblioteca.bat)
+      location.reload();
+    }
+
+    function renderBibliotecaInfo() {
+      const el = document.getElementById('bibliotecaInfo');
+      if (!el) return;
+      const ocultas = libPrefs.ocultas.filter(id => bibliotecaTodas.some(d => d.id === id)).length;
+      const estado = libEstado.sinLista
+        ? '<div class="aviso">⚠️ Todavía no hay lista de la biblioteca: ejecuta <code>actualizar_biblioteca.bat</code>.</div>'
+        : `<div>📁 <strong>${libEstado.total}</strong> ${libEstado.total === 1 ? 'imagen' : 'imágenes'} en la carpeta`
+          + (ocultas ? ` (${ocultas} oculta${ocultas === 1 ? '' : 's'} del libro)` : '')
+          + (libEstado.generado ? ` · lista actualizada el ${escapeHtml(libEstado.generado)}` : '') + '</div>';
+      const fallos = libEstado.fallidas.length
+        ? `<div class="aviso">⚠️ No se pudieron abrir ${libEstado.fallidas.length} archivo(s): ${libEstado.fallidas.slice(0, 5).map(escapeHtml).join(', ')}${libEstado.fallidas.length > 5 ? '…' : ''}. Si los borraste o renombraste, vuelve a ejecutar <code>actualizar_biblioteca.bat</code>.</div>`
+        : '';
+      el.innerHTML = `
+        ${estado}
+        <div style="margin-top: 6px;"><strong>Para añadir dibujos:</strong></div>
+        <ol>
+          <li>Copia tus imágenes en la carpeta <code>biblioteca</code> del proyecto (puedes usar subcarpetas como categorías).</li>
+          <li>Haz doble clic en <code>actualizar_biblioteca.bat</code>.</li>
+          <li>Pulsa <strong>🔄 Actualizar</strong>.</li>
+        </ol>
+        ${fallos}`;
+      const btn = document.getElementById('btnMostrarOcultas');
+      if (btn) btn.innerText = ocultas ? `👁️ Mostrar ocultas (${ocultas})` : '👁️ Mostrar ocultas';
+    }
+
+    // Cambiar orientación manualmente (Horizontal <-> Vertical)
+    function toggleDrawingOrientation(id, event) {
+      if (event) event.stopPropagation();
+      const d = appDrawings.find(x => x.id === id);
+      if (!d) return;
+      d.orientation = d.orientation === 'horizontal' ? 'vertical' : 'horizontal';
+      libPrefs.orientacion[id] = d.orientation;
+      refrescar();
+      showToast(`Orientación de "${d.title}" cambiada a ${d.orientation === 'horizontal' ? 'Horizontal' : 'Vertical'}`);
+    }
+
+    // Girar 90° (solo en el libro: el archivo original no cambia)
+    function rotateDrawing(id, event) {
+      if (event) event.stopPropagation();
+      const d = appDrawings.find(x => x.id === id);
+      if (!d) return;
+      d.giro = (d.giro + 90) % 360;
+      libPrefs.giro[id] = d.giro;
+      [d.width, d.height] = [d.height, d.width];
+      d.aspect = d.width / d.height;
+      delete libPrefs.orientacion[id];
+      d.orientation = orientacionAuto(d.width, d.height);
+      refrescar();
+      showToast(`"${d.title}" girado ${d.giro}°`);
+    }
+
+    // Mover posición en el orden del libro
+    function moveDrawing(id, direction, event) {
+      if (event) event.stopPropagation();
+      const idx = appDrawings.findIndex(x => x.id === id);
+      const targetIdx = idx + direction;
+      if (idx === -1 || targetIdx < 0 || targetIdx >= appDrawings.length) return;
+      [appDrawings[idx], appDrawings[targetIdx]] = [appDrawings[targetIdx], appDrawings[idx]];
+      refrescar();
+    }
+
+    // Quitar del libro (se oculta; el archivo de la carpeta no se borra)
+    function deleteDrawing(id, event) {
+      if (event) event.stopPropagation();
+      const d = appDrawings.find(x => x.id === id);
+      const name = d ? d.title : 'imagen';
+      if (!confirm(`¿Quitar "${name}" del libro?\n\nEl archivo no se borra de la carpeta; podrás recuperarlo con «Mostrar ocultas».`)) return;
+      if (!libPrefs.ocultas.includes(id)) libPrefs.ocultas.push(id);
+      appDrawings = appDrawings.filter(x => x.id !== id);
+      selectedIds = selectedIds.filter(xId => xId !== id);
+      refrescar();
+      renderBibliotecaInfo();
+      showToast(`"${name}" quitado del libro`);
+    }
+
+    function mostrarOcultas() {
+      const n = libPrefs.ocultas.filter(id => bibliotecaTodas.some(d => d.id === id)).length;
+      if (!n) { showToast('No hay dibujos ocultos'); return; }
+      saveLibPrefs();
+      libPrefs.ocultas = [];
+      aplicarPreferencias();
+      refrescar();
+      renderBibliotecaInfo();
+      showToast(`Se volvieron a mostrar ${n} dibujo${n === 1 ? '' : 's'}`);
+    }
+
+    function ordenOriginal() {
+      saveLibPrefs();
+      libPrefs.orden = [];
+      aplicarPreferencias();
+      const sel = document.getElementById('librarySortFilter');
+      if (sel) sel.value = 'default';
+      refrescar();
+      showToast('Orden de la carpeta restaurado');
+    }
+
+    // Ordenar biblioteca (orden estable: dentro de cada grupo se conserva el orden previo)
+    function sortAndRenderLibrary(criteria) {
+      const rank = (d, first) => (d.orientation === first ? 0 : 1);
+      if (criteria === 'name-asc') {
+        appDrawings.sort((a, b) => a.title.localeCompare(b.title, 'es', { numeric: true, sensitivity: 'base' }));
+      } else if (criteria === 'horiz-first') {
+        appDrawings.sort((a, b) => rank(a, 'horizontal') - rank(b, 'horizontal'));
+      } else if (criteria === 'vert-first') {
+        appDrawings.sort((a, b) => rank(a, 'vertical') - rank(b, 'vertical'));
+      } else {
+        ordenOriginal();
+        return;
+      }
+      refrescar();
+    }
+
+    // Actualizar contadores en cabecera y barra de estado (y guardar la selección)
+    function updateCounters() {
+      saveLibPrefs();
+      if (typeof updateCollapsedSummaryBadges === 'function') updateCollapsedSummaryBadges();
+      const headerCountEl = document.getElementById('headerSelectedCount');
+      if (headerCountEl) headerCountEl.innerText = selectedIds.length;
+
+      const horiz = appDrawings.filter(d => d.orientation === 'horizontal').length;
+      const vert = appDrawings.filter(d => d.orientation === 'vertical').length;
+      const statusDetailsEl = document.getElementById('statusDetails');
+      if (statusDetailsEl) {
+        statusDetailsEl.innerText = libEstado.sinLista
+          ? 'Sin lista: ejecuta actualizar_biblioteca.bat'
+          : `${appDrawings.length} dibujos en el libro (${vert} verticales, ${horiz} horizontales) • ${selectedIds.length} seleccionados para imprimir`;
+      }
+      const statusCountEl = document.getElementById('statusBarCount');
+      if (statusCountEl) statusCountEl.innerText = appDrawings.length;
+    }
+
+    // Notificaciones Toast
+    function showToast(msg) {
+      const existing = document.querySelector('.toast-msg');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg no-print';
+      toast.setAttribute('role', 'status');
+      toast.innerHTML = `<span>${escapeHtml(msg)}</span>`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s';
+        setTimeout(() => toast.remove(), 500);
+      }, 4000);
+    }
+
+    // --- TEMA CLARO / OSCURO (oscuro por defecto; se aplica en <head> antes de pintar) ---
+    function actualizarBotonTema() {
+      const oscuro = document.documentElement.getAttribute('data-theme') !== 'light';
+      const btn = document.getElementById('btnTema');
+      if (btn) {
+        btn.textContent = oscuro ? '☀️' : '🌙';
+        btn.title = oscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+      }
+    }
+
+    function alternarTema() {
+      const nuevo = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', nuevo);
+      try { localStorage.setItem('pintablesCatolicos.tema', nuevo); } catch (e) { /* se ignora */ }
+      actualizarBotonTema();
+    }
+
+    async function initApplication() {
+      actualizarBotonTema();
+      // 1. Ajustes guardados (hoja, márgenes, portada...) y preferencias de la biblioteca
+      loadSettings();
+      if (!['smart', '1-per-page', '4-per-page'].includes(appConfig.layoutMode)) appConfig.layoutMode = 'smart';
+      loadLibPrefs();
+      syncControlsFromConfig();
+      updateHeaderOffset();
+      window.addEventListener('resize', updateHeaderOffset);
+      updateCollapsedSummaryBadges();
+
+      // 2. Leer la carpeta biblioteca/ (dimensiones reales de cada imagen)
+      await cargarBiblioteca();
+      updateCounters();
+      renderDocument();
+      renderLibraryGrid();
+      renderBibliotecaInfo();
+      if (libEstado.fallidas.length) {
+        showToast(`⚠️ ${libEstado.fallidas.length} imagen(es) de la lista no se pudieron abrir: ejecuta actualizar_biblioteca.bat`);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initApplication);
+    } else {
+      initApplication();
+    }
+
+    // --- MODAL DE PORTADA ---
+    function openCoverModal() {
+      document.getElementById('coverTitleInput').value = appConfig.coverData.title;
+      document.getElementById('coverSubtitleInput').value = appConfig.coverData.subtitle;
+      document.getElementById('coverDedicationInput').value = appConfig.coverData.dedication;
+      document.getElementById('coverOwnerInput').value = appConfig.coverData.ownerName;
+      document.getElementById('coverParishInput').value = appConfig.coverData.parishOrSchool;
+      document.getElementById('coverYearInput').value = appConfig.coverData.year;
+      document.getElementById('coverModal').style.display = 'flex';
+    }
+
+    function closeCoverModal() {
+      document.getElementById('coverModal').style.display = 'none';
+    }
+
+    function saveCoverData() {
+      appConfig.coverData.title = document.getElementById('coverTitleInput').value;
+      appConfig.coverData.subtitle = document.getElementById('coverSubtitleInput').value;
+      appConfig.coverData.dedication = document.getElementById('coverDedicationInput').value;
+      appConfig.coverData.ownerName = document.getElementById('coverOwnerInput').value;
+      appConfig.coverData.parishOrSchool = document.getElementById('coverParishInput').value;
+      appConfig.coverData.year = document.getElementById('coverYearInput').value;
+      closeCoverModal();
+      renderDocument();
+      showToast('✏️ Portada actualizada');
+    }
+
+    // Cerrar modales con Escape o haciendo clic fuera del contenido
+    function closeTopModal() {
+      if (document.getElementById('coverModal').style.display === 'flex') { closeCoverModal(); return true; }
+      if (document.getElementById('libraryModal').style.display === 'flex') { closeLibraryModal(); return true; }
+      return false;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && closeTopModal()) e.preventDefault();
+      // Enter dentro del formulario de portada guarda los cambios
+      if (e.key === 'Enter' && e.target && e.target.closest && e.target.closest('#coverModal') && e.target.tagName === 'INPUT') {
+        e.preventDefault();
+        saveCoverData();
+      }
+    });
+
+    ['libraryModal', 'coverModal'].forEach(id => {
+      const overlay = document.getElementById(id);
+      overlay.addEventListener('mousedown', (e) => {
+        if (e.target === overlay) overlay.dataset.backdropDown = '1';
+      });
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay && overlay.dataset.backdropDown === '1') {
+          id === 'coverModal' ? closeCoverModal() : closeLibraryModal();
+        }
+        overlay.dataset.backdropDown = '';
+      });
+    });
+
+    // --- EXPORTACIÓN A WORD (.docx con las imágenes incrustadas) ---
+    // Se arma en el navegador, sin librerías: un ZIP (sin compresión) con el XML de Word y las
+    // imágenes ya giradas y reducidas a ~200 ppp. Reproduce lo que se ve en pantalla: portada,
+    // dibujos por hoja, línea de corte, giros, tamaño de hoja y márgenes.
+    const DOCX_PPP = 200;          // resolución de las imágenes incrustadas
+    const GROSOR_MARCO_MM = 0.5;   // grosor del marco negro de cada dibujo
+    const MM_EMU = 36000;          // 1 mm en EMU (unidad de dibujo de Word)
+    const MM_TWIP = 56.6929;       // 1 mm en twips (unidad de página de Word)
+
+    const xmlEsc = t => String(t == null ? '' : t)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+    // --- ZIP mínimo (método «store») ---
+    const CRC_TABLA = (() => {
+      const t = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+        t[n] = c >>> 0;
+      }
+      return t;
+    })();
+
+    function crc32(bytes) {
+      let c = 0xFFFFFFFF;
+      for (let i = 0; i < bytes.length; i++) c = CRC_TABLA[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+      return (c ^ 0xFFFFFFFF) >>> 0;
+    }
+
+    function crearZip(archivos) {  // [{nombre, datos: Uint8Array}]
+      const enc = new TextEncoder();
+      const partes = [], central = [];
+      let offset = 0;
+      for (const a of archivos) {
+        const nombre = enc.encode(a.nombre), crc = crc32(a.datos), tam = a.datos.length;
+        const loc = new DataView(new ArrayBuffer(30));
+        loc.setUint32(0, 0x04034b50, true); loc.setUint16(4, 20, true); loc.setUint16(6, 0x0800, true);
+        loc.setUint32(14, crc, true); loc.setUint32(18, tam, true); loc.setUint32(22, tam, true);
+        loc.setUint16(26, nombre.length, true);
+        partes.push(new Uint8Array(loc.buffer), nombre, a.datos);
+        const cen = new DataView(new ArrayBuffer(46));
+        cen.setUint32(0, 0x02014b50, true); cen.setUint16(4, 20, true); cen.setUint16(6, 20, true);
+        cen.setUint16(8, 0x0800, true); cen.setUint32(16, crc, true); cen.setUint32(20, tam, true);
+        cen.setUint32(24, tam, true); cen.setUint16(28, nombre.length, true); cen.setUint32(42, offset, true);
+        central.push(new Uint8Array(cen.buffer), nombre);
+        offset += 30 + nombre.length + tam;
+      }
+      const tamCentral = central.reduce((s, p) => s + p.length, 0);
+      const fin = new DataView(new ArrayBuffer(22));
+      fin.setUint32(0, 0x06054b50, true); fin.setUint16(8, archivos.length, true);
+      fin.setUint16(10, archivos.length, true); fin.setUint32(12, tamCentral, true); fin.setUint32(16, offset, true);
+      return new Blob([...partes, ...central, new Uint8Array(fin.buffer)],
+        { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    }
+
+    // --- Imágenes: cargar, girar y reducir con canvas ---
+    function cargarImg(src) {
+      return new Promise((ok, mal) => {
+        const img = new Image();
+        img.onload = () => ok(img);
+        img.onerror = () => mal(new Error('No se pudo abrir ' + src));
+        img.src = src;
+      });
+    }
+
+    // Devuelve {bytes, w, h} (JPEG) con el dibujo girado `giro` grados y escalado a anchoMm × altoMm
+    async function procesarImagen(d, giro, anchoMm, altoMm) {
+      const img = await cargarImg(d.imageUrl);
+      const rc0 = d.recorte || { l: 0, t: 0, r: 0, b: 0 };
+      const fuenteW = img.naturalWidth * (1 - rc0.l - rc0.r), fuenteH = img.naturalHeight * (1 - rc0.t - rc0.b);
+      const pxW = Math.max(1, Math.round(Math.min(anchoMm / 25.4 * DOCX_PPP, giro % 180 ? fuenteH : fuenteW)));
+      const pxH = Math.max(1, Math.round(pxW * altoMm / anchoMm));
+      const canvas = document.createElement('canvas');
+      canvas.width = pxW; canvas.height = pxH;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, pxW, pxH);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.translate(pxW / 2, pxH / 2);
+      ctx.rotate(giro * Math.PI / 180);
+      const [dw, dh] = giro % 180 ? [pxH, pxW] : [pxW, pxH];
+      const rc = d.recorte || { l: 0, t: 0, r: 0, b: 0 };
+      const sx = rc.l * img.naturalWidth, sy = rc.t * img.naturalHeight;
+      const sw = img.naturalWidth * (1 - rc.l - rc.r), sh = img.naturalHeight * (1 - rc.t - rc.b);
+      ctx.drawImage(img, sx, sy, sw, sh, -dw / 2, -dh / 2, dw, dh);
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+      return new Uint8Array(await blob.arrayBuffer());
+    }
+
+    // Tamaño (mm) del dibujo ajustado a un hueco W×H sin deformarlo; también decide el giro
+    function encajar(d, W, H) {
+      const extra = debeGirar(d, W, H) ? 90 : 0;
+      const giro = ((d.giro || 0) + extra) % 360;
+      // proporción ya girada: d.width/d.height incluye el giro manual; el automático la invierte
+      const r = extra ? d.height / d.width : d.width / d.height;
+      const [w, h] = appConfig.estirar ? [W, H] : (r > W / H ? [W, W / r] : [H * r, H]);
+      return { giro, w, h };
+    }
+
+    // --- Piezas de document.xml ---
+    const pAlineado = (contenido, { antesSalto = false, centro = true, despues = 0, antes = 0 } = {}) =>
+      `<w:p><w:pPr>${antesSalto ? '<w:pageBreakBefore/>' : ''}<w:spacing w:before="${antes}" w:after="${despues}" w:line="240" w:lineRule="auto"/>${centro ? '<w:jc w:val="center"/>' : ''}</w:pPr>${contenido}</w:p>`;
+
+    const runTexto = (texto, { tam = 22, negrita = false, color = '000000', fuente = '' } = {}) =>
+      `<w:r><w:rPr>${fuente ? `<w:rFonts w:ascii="${fuente}" w:hAnsi="${fuente}"/>` : ''}${negrita ? '<w:b/>' : ''}<w:color w:val="${color}"/><w:sz w:val="${tam}"/></w:rPr><w:t xml:space="preserve">${xmlEsc(texto)}</w:t></w:r>`;
+
+    function runImagen(rid, idDoc, nombre, wMm, hMm, marco) {
+      const cx = Math.round(wMm * MM_EMU), cy = Math.round(hMm * MM_EMU);
+      return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/>` +
+        `<wp:docPr id="${idDoc}" name="${xmlEsc(nombre)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr>` +
+        `<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic>` +
+        `<pic:nvPicPr><pic:cNvPr id="${idDoc}" name="${xmlEsc(nombre)}"/><pic:cNvPicPr/></pic:nvPicPr>` +
+        `<pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>` +
+        `<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom>` +
+        (marco ? `<a:ln w="${Math.round(GROSOR_MARCO_MM * MM_EMU)}"><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:prstDash val="solid"/></a:ln>` : '') +
+        `</pic:spPr>` +
+        `</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`;
+    }
+
+    async function generarDocx(progreso) {
+      const pages = computePages();
+      const paper = PAPER_DIMS[appConfig.paperSize] || PAPER_DIMS.letter;
+      const m = MARGIN_DIMS[appConfig.marginPreset] || MARGIN_DIMS.normal;
+
+      const media = [], rels = [], cache = new Map();
+      let idDoc = 1;
+      async function imagen(d, W, H) {
+        const { giro, w, h } = encajar(d, W, H);
+        const clave = `${d.id}|${giro}|${w.toFixed(1)}|${h.toFixed(1)}`;
+        if (!cache.has(clave)) {
+          const bytes = await procesarImagen(d, giro, w, h);
+          const n = media.length + 1;
+          media.push({ nombre: `word/media/imagen${n}.jpeg`, datos: bytes });
+          rels.push(`<Relationship Id="rIdImg${n}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/imagen${n}.jpeg"/>`);
+          cache.set(clave, `rIdImg${n}`);
+        }
+        progreso && progreso(media.length);
+        return runImagen(cache.get(clave), idDoc++, d.title, w * 0.998, h * 0.998, appConfig.marco);
+      }
+
+      const tw = v => Math.round(v * MM_TWIP);
+      const corte = '<w:bottom w:val="dashed" w:sz="8" w:space="0" w:color="64748B"/>';
+      const corteV = '<w:right w:val="dashed" w:sz="8" w:space="0" w:color="64748B"/>';
+      const pVacio = '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr><w:r><w:rPr><w:sz w:val="2"/></w:rPr><w:t></w:t></w:r></w:p>';
+      // Párrafo mínimo tras cada hoja: Word exige un párrafo después de una tabla y lleva el salto
+      const pFinHoja = ultima => '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr>' +
+        `<w:r><w:rPr><w:sz w:val="2"/></w:rPr>${ultima ? '<w:t></w:t>' : '<w:br w:type="page"/>'}</w:r></w:p>`;
+
+      let cuerpo = '';
+      for (let p = 0; p < pages.length; p++) {
+        const page = pages[p];
+        const ultima = p === pages.length - 1;
+        if (page.isCover) {
+          const c = page.coverData;
+          cuerpo += pAlineado(runTexto(c.title.toUpperCase(), { tam: 52, negrita: true, fuente: 'Georgia' }), { antes: 600, despues: 120 });
+          cuerpo += pAlineado(runTexto(c.subtitle, { tam: 26, color: '475569' }), { despues: 1600 });
+          cuerpo += pAlineado(runTexto('✝', { tam: 160 }), { despues: 200 });
+          cuerpo += pAlineado(runTexto('DIBUJA Y COLOREA', { tam: 20, negrita: true, color: '94A3B8' }), { despues: 2400 });
+          cuerpo += pAlineado(runTexto(c.dedication, { tam: 24, negrita: true, color: '334155' }), { despues: 200 });
+          cuerpo += pAlineado(runTexto(c.ownerName || '______________________________', { tam: 32, negrita: true, fuente: 'Courier New' }), { despues: 400 });
+          cuerpo += pAlineado(runTexto(`${c.parishOrSchool}    ·    Año: ${c.year}`, { tam: 22, color: '64748B' }));
+          cuerpo += pFinHoja(ultima);
+          continue;
+        }
+
+        // Misma geometría que en pantalla: celdas del papel menos el margen por cada lado.
+        // La tabla ocupa exactamente el área entre márgenes de la página; las filas/columnas
+        // intermedias son el margen inferior + superior (o derecho + izquierdo) alrededor del corte.
+        const g = geometriaHoja(page.layout, paper, m);
+        const [hw, hh] = g.hueco;
+        // La reserva de 0,6 mm para el párrafo final (salto de página) se toma de la última fila,
+        // así el corte queda en el centro exacto y los dos dibujos a la misma distancia de él.
+        const RESERVA = 0.6;
+        const filasMm = g.filas === 2 ? [hh, m.bottom, m.top, hh - RESERVA] : [hh - RESERVA];
+        const colsMm = g.cols === 2 ? [hw, m.right, m.left, hw] : [hw];
+        const filaDe = { 0: 0, 3: 1 }, colDe = { 0: 0, 3: 1 };
+        let filas = '';
+        for (let f = 0; f < filasMm.length; f++) {
+          filas += `<w:tr><w:trPr><w:trHeight w:val="${tw(filasMm[f])}" w:hRule="exact"/><w:cantSplit/></w:trPr>`;
+          for (let c = 0; c < colsMm.length; c++) {
+            const bordes = (appConfig.showCutLines && g.filas === 2 && f === 1 ? corte : '') +
+              (appConfig.showCutLines && g.cols === 2 && c === 1 ? corteV : '');
+            const fi = g.filas === 2 ? filaDe[f] : 0, ci = g.cols === 2 ? colDe[c] : 0;
+            const esImagen = fi !== undefined && ci !== undefined;
+            const d = esImagen ? page.slots[fi * g.cols + ci] : null;
+            filas += `<w:tc><w:tcPr><w:tcW w:w="${tw(colsMm[c])}" w:type="dxa"/>${bordes ? `<w:tcBorders>${bordes}</w:tcBorders>` : ''}<w:vAlign w:val="center"/></w:tcPr>` +
+              (d ? pAlineado(await imagen(d, hw, hh - RESERVA)) : pVacio) + '</w:tc>';
+          }
+          filas += '</w:tr>';
+        }
+        cuerpo += `<w:tbl><w:tblPr><w:tblW w:w="${tw(colsMm.reduce((a, b) => a + b, 0))}" w:type="dxa"/><w:jc w:val="center"/>` +
+          '<w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr>' +
+          `<w:tblGrid>${colsMm.map(c => `<w:gridCol w:w="${tw(c)}"/>`).join('')}</w:tblGrid>${filas}</w:tbl>` + pFinHoja(ultima);
+      }
+
+      const sectPr = '<w:sectPr>' +
+        `<w:pgSz w:w="${tw(paper.w)}" w:h="${tw(paper.h)}"/>` +
+        `<w:pgMar w:top="${tw(m.top)}" w:right="${tw(m.right)}" w:bottom="${tw(m.bottom)}" w:left="${tw(m.left)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`;
+
+      const NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" ' +
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
+        'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" ' +
+        'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
+        'xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
+      const documento = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${cuerpo}${sectPr}</w:body></w:document>`;
+      const enc = new TextEncoder();
+      const t = s => enc.encode(s);
+      return crearZip([
+        { nombre: '[Content_Types].xml', datos: t('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+          '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
+          '<Default Extension="jpeg" ContentType="image/jpeg"/>' +
+          '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+          '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>') },
+        { nombre: '_rels/.rels', datos: t('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+          '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+          '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>') },
+        { nombre: 'docProps/core.xml', datos: t('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">' +
+          `<dc:title>${xmlEsc(appConfig.coverData.title)}</dc:title><dc:creator>Pintables Católicos</dc:creator></cp:coreProperties>`) },
+        { nombre: 'word/_rels/document.xml.rels', datos: t('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+          rels.join('') + '</Relationships>') },
+        { nombre: 'word/document.xml', datos: t(documento) },
+        ...media
+      ]);
+    }
+
+    async function exportWord() {
+      const btn = document.getElementById('btnExportWord');
+      const pages = computePages();
+      if (!pages.some(p => !p.isCover)) {
+        showToast('No hay dibujos seleccionados para el libro');
+        return;
+      }
+      if (location.protocol === 'file:') {
+        alert('Para descargar el documento de Word, abre la aplicación con Live Server (http://localhost:5500).\n\n' +
+          'Al abrir index.html con doble clic, el navegador no permite leer las imágenes para incrustarlas.');
+        return;
+      }
+      const original = btn ? btn.innerHTML : '';
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span>⏳ Generando Word…</span>'; }
+      try {
+        const total = new Set(pages.flatMap(p => (p.slots || []).filter(Boolean).map(d => d.id))).size;
+        const blob = await generarDocx(n => { if (btn) btn.innerHTML = `<span>⏳ Imagen ${n}…</span>`; });
+        const nombre = (appConfig.coverData.title || 'Libro para colorear').replace(/[\\/:*?"<>|]+/g, '').trim() || 'Libro para colorear';
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = nombre + '.docx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+        showToast(`📄 Word descargado: ${pages.length} hojas, ${total} dibujos (${(blob.size / 1048576).toFixed(1)} MB)`);
+      } catch (err) {
+        console.error(err);
+        alert('No se pudo generar el documento de Word:\n' + err.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = original; }
+      }
+    }
+
+    // --- EXPORTACIÓN PDF ---
+    // Usa el motor de impresión del navegador, que respeta exactamente el tamaño de hoja y los
+    // márgenes; el usuario solo debe elegir «Guardar como PDF» como destino.
+    function exportPDF() {
+      const paperName = (PAPER_DIMS[appConfig.paperSize] || PAPER_DIMS.letter).name;
+      showToast(`💡 En el destino elige «Guardar como PDF», tamaño ${paperName} y márgenes «Ninguno»`);
+      setTimeout(() => window.print(), 600);
+    }
+
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return '';
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+
+</body>
+
+</html>

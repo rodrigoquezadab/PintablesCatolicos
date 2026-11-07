@@ -1,0 +1,15 @@
+BIBLIOTECA DE PINTABLES CATÓLICOS
+=================================
+
+Esta carpeta es la biblioteca de dibujos de la aplicación.
+
+Para añadir dibujos:
+  1. Copia aquí tus imágenes (PNG, JPG, WEBP, GIF, BMP o SVG).
+     Puedes crear subcarpetas: cada subcarpeta se muestra como una categoría.
+  2. Haz doble clic en  actualizar_biblioteca.bat  (en la carpeta principal del proyecto).
+  3. En la aplicación pulsa «Actualizar» (o recarga la página).
+
+Para quitar dibujos: bórralos de esta carpeta y repite los pasos 2 y 3.
+(En la aplicación, «Quitar» solo oculta un dibujo del libro; nunca borra el archivo.)
+
+No edites a mano el archivo biblioteca.js: lo genera el actualizador.
