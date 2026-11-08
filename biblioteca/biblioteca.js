@@ -1,6 +1,6 @@
 // Archivo generado por actualizar_biblioteca.py — no editar a mano.
 window.BIBLIOTECA = {
- "generado": "07-11-2026 16:22",
+ "generado": "07-11-2026 23:32",
  "imagenes": [
   {
    "archivo": "biblioteca/Antiguo Testamento/Dios abre caminos (Moisés cruza el Mar Rojo).jpg",
@@ -43,13 +43,33 @@ window.BIBLIOTECA = {
    "categoria": "Eucaristía"
   },
   {
+   "archivo": "biblioteca/Eucaristía/Mi Primera Comunión (con la familia).png",
+   "titulo": "Mi Primera Comunión (con la familia)",
+   "categoria": "Eucaristía"
+  },
+  {
    "archivo": "biblioteca/Navidad/Sagrada Familia (el Niño Jesús en el pesebre).jpg",
    "titulo": "Sagrada Familia (el Niño Jesús en el pesebre)",
    "categoria": "Navidad"
   },
   {
+   "archivo": "biblioteca/Sacramentos/Mi Confirmación (con el obispo y la familia).png",
+   "titulo": "Mi Confirmación (con el obispo y la familia)",
+   "categoria": "Sacramentos"
+  },
+  {
    "archivo": "biblioteca/Santos/Jesús es mi luz (la conversión de San Pablo).png",
    "titulo": "Jesús es mi luz (la conversión de San Pablo)",
+   "categoria": "Santos"
+  },
+  {
+   "archivo": "biblioteca/Santos/San Alberto Hurtado (con los niños).png",
+   "titulo": "San Alberto Hurtado (con los niños)",
+   "categoria": "Santos"
+  },
+  {
+   "archivo": "biblioteca/Santos/San Alberto Hurtado y su camioneta (Hogar de Cristo).jpg",
+   "titulo": "San Alberto Hurtado y su camioneta (Hogar de Cristo)",
    "categoria": "Santos"
   },
   {
@@ -63,6 +83,16 @@ window.BIBLIOTECA = {
    "categoria": "Santos"
   },
   {
+   "archivo": "biblioteca/Santos/Santa Teresa de los Andes (con una familia).png",
+   "titulo": "Santa Teresa de los Andes (con una familia)",
+   "categoria": "Santos"
+  },
+  {
+   "archivo": "biblioteca/Santos/Santa Teresa de los Andes (versión sencilla).png",
+   "titulo": "Santa Teresa de los Andes (versión sencilla)",
+   "categoria": "Santos"
+  },
+  {
    "archivo": "biblioteca/Semana Santa/Domingo de Ramos (Jesús entra en Jerusalén con la multitud).jpg",
    "titulo": "Domingo de Ramos (Jesús entra en Jerusalén con la multitud)",
    "categoria": "Semana Santa"
@@ -71,6 +101,36 @@ window.BIBLIOTECA = {
    "archivo": "biblioteca/Semana Santa/Domingo de Ramos (versión sencilla).jpg",
    "titulo": "Domingo de Ramos (versión sencilla)",
    "categoria": "Semana Santa"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Bendice los alimentos (oración antes de comer).png",
+   "titulo": "Bendice los alimentos (oración antes de comer)",
+   "categoria": "Vida cristiana"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Compartir es amar (los niños comparten el pan).png",
+   "titulo": "Compartir es amar (los niños comparten el pan)",
+   "categoria": "Vida cristiana"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Leo la Biblia.png",
+   "titulo": "Leo la Biblia",
+   "categoria": "Vida cristiana"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Rezamos en familia (el Rosario).png",
+   "titulo": "Rezamos en familia (el Rosario)",
+   "categoria": "Vida cristiana"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Vamos a Misa (versión sencilla).png",
+   "titulo": "Vamos a Misa (versión sencilla)",
+   "categoria": "Vida cristiana"
+  },
+  {
+   "archivo": "biblioteca/Vida cristiana/Vamos a Misa los domingos (en familia).png",
+   "titulo": "Vamos a Misa los domingos (en familia)",
+   "categoria": "Vida cristiana"
   },
   {
    "archivo": "biblioteca/Vida de Jesús/Dios multiplica (los panes y los peces).png",
