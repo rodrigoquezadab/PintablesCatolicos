@@ -6,7 +6,7 @@ Es una aplicación web de un solo archivo (`index.html`): no requiere instalaci�
 
 ## Cómo usarla
 
-1. Copia tus dibujos en la carpeta `biblioteca/` (PNG, JPG, WEBP, GIF, BMP o SVG). Las subcarpetas se muestran como temas (*Navidad*, *Santos*…).
+1. Deja las imágenes nuevas en `imagenes_nuevas/` para clasificarlas, o cópialas ya ordenadas en la carpeta `biblioteca/` (PNG, JPG, WEBP, GIF, BMP o SVG). Las subcarpetas se muestran como temas (*Navidad*, *Santos*…).
 2. Haz doble clic en `actualizar_biblioteca.bat` para actualizar la lista de dibujos (usa Python).
 3. Abre `index.html` en el navegador (o con Live Server en `http://localhost:5500`) y pulsa **🔄 Actualizar**.
 
@@ -28,5 +28,6 @@ Es una aplicación web de un solo archivo (`index.html`): no requiere instalaci�
 | `PintablesCatolicos.html` | Copia idéntica de `index.html` |
 | `biblioteca/` | Dibujos de la biblioteca y su lista `biblioteca.js` (generada) |
 | `actualizar_biblioteca.py` / `.bat` | Actualizador de la lista de la biblioteca |
-| `uploadimages/` | Láminas de referencia originales |
+| `imagenes_nuevas/` | Bandeja para dejar imágenes nuevas antes de clasificarlas (su contenido no se sube a GitHub) |
+| `referencias/` | Láminas de referencia originales de `pintar.pptx` (modelo de estilo; la app no las usa) |
 | `CONTEXT.md` | Contexto del proyecto e historial de cambios |

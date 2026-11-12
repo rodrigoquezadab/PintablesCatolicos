@@ -1,0 +1,14 @@
+IMÁGENES NUEVAS (POR CLASIFICAR)
+================================
+
+Deja aquí las imágenes que vayas subiendo, con cualquier nombre.
+
+Después pídele a Claude que las clasifique e integre: las revisará, quitará
+duplicados, les pondrá un nombre claro (Título (escena)) y las moverá a la
+carpeta de su tema dentro de «biblioteca».
+
+Tamaño ideal para 2 dibujos por hoja Carta (márgenes de 1 cm):
+  2400 × 1466 px (proporción 1,64 : 1, apaisada), fondo blanco, sin margen alrededor.
+
+Esta carpeta no se sube a GitHub (salvo este archivo): las imágenes se suben
+cuando ya están integradas en la biblioteca.

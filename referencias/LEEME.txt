@@ -1,0 +1,9 @@
+LÁMINAS DE REFERENCIA
+=====================
+
+Hojas originales exportadas de la presentación «pintar.pptx» (2 láminas por hoja).
+Sirven como modelo de estilo para los dibujos (trazo, composición, título en letras huecas).
+
+La aplicación NO usa esta carpeta: los dibujos que se imprimen están en «biblioteca».
+La Hoja 1 es la versión corregida (en la exportación original la «O» de «NACIO» quedaba
+cortada en el borde derecho).

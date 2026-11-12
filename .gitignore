@@ -26,3 +26,7 @@ dist-ssr
 # Archivos de sistema de Windows
 desktop.ini
 Thumbs.db
+
+# Imágenes nuevas pendientes de clasificar (solo se sube el LEEME)
+imagenes_nuevas/*
+!imagenes_nuevas/LEEME.txt

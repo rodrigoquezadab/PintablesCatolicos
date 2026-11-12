@@ -280,6 +280,10 @@ El repositorio cuenta con dos modalidades complementarias:
   * Cada dibujo lleva un marco de línea negra de 0,5 mm (`GROSOR_MARCO_MM`) que lo rodea exactamente, también si se desactiva «Estirar» y el dibujo conserva su proporción. Interruptor «🖼️ Marco» en Ajustes (activado por defecto).
   * En pantalla/impresión es un `outline` escalado al papel con unidades de contenedor; en Word es el contorno de la imagen (`a:ln`). Verificado en LibreOffice.
 
+* **v3.6.0 (11-11-2026) — Orden de carpetas: referencias y bandeja de imágenes nuevas:**
+  * `uploadimages/` y `uploadimages_copia/` (20 archivos, solo 6 imágenes distintas) se reemplazan por `referencias/` con las 5 hojas de `pintar.pptx` con nombres claros («Hoja 1 - Jesús nació y Espíritu Santo guíame.png»…); se conserva la versión corregida de la Hoja 1. Las copias se enviaron a la Papelera.
+  * Nueva carpeta `imagenes_nuevas/`: bandeja donde el usuario deja imágenes para que Claude las clasifique, quite duplicados, renombre e integre en `biblioteca/`. Su contenido está en `.gitignore` (solo se sube su `LEEME.txt`).
+
 ---
 
 ## 8. Guía Estilística Oficial de Trazos y Composiciones (Benchmark Referencial)
