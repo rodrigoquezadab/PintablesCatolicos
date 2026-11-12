@@ -1,6 +1,6 @@
 // Archivo generado por actualizar_biblioteca.py — no editar a mano.
 window.BIBLIOTECA = {
- "generado": "07-11-2026 23:32",
+ "generado": "11-11-2026 23:30",
  "imagenes": [
   {
    "archivo": "biblioteca/Antiguo Testamento/Dios abre caminos (Moisés cruza el Mar Rojo).jpg",
@@ -48,6 +48,11 @@ window.BIBLIOTECA = {
    "categoria": "Eucaristía"
   },
   {
+   "archivo": "biblioteca/Eucaristía/Mi Primera Comunión (versión sencilla).png",
+   "titulo": "Mi Primera Comunión (versión sencilla)",
+   "categoria": "Eucaristía"
+  },
+  {
    "archivo": "biblioteca/Navidad/Sagrada Familia (el Niño Jesús en el pesebre).jpg",
    "titulo": "Sagrada Familia (el Niño Jesús en el pesebre)",
    "categoria": "Navidad"
@@ -68,7 +73,7 @@ window.BIBLIOTECA = {
    "categoria": "Santos"
   },
   {
-   "archivo": "biblioteca/Santos/San Alberto Hurtado y su camioneta (Hogar de Cristo).jpg",
+   "archivo": "biblioteca/Santos/San Alberto Hurtado y su camioneta (Hogar de Cristo).png",
    "titulo": "San Alberto Hurtado y su camioneta (Hogar de Cristo)",
    "categoria": "Santos"
   },
